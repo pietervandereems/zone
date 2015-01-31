@@ -28,6 +28,10 @@ body {
 	color: #656565;
 	text-shadow:0 0px, 1px 1px #FFFFFF;
 }
+
+ul {
+    padding-left: 2em;
+}
 a img { 
 	border: none;
 }
