@@ -30,8 +30,7 @@
                 db.query({
                     map: function (doc, emit) {
                         emit(doc.name);
-                    }
-                }, {
+                    },
                     reduce: false
                 }, {
                     key: elm.dataset.character
@@ -40,12 +39,11 @@
                         console.error('Error querying database for character', elm.dataset.character, err);
                         return;
                     }
-                    console.log(response);
-        //            characters[elm.dataset.character].docId = result
-        //            refreshContent()
+                    characters[elm.dataset.character].docId = response.rows[0].id;
+                    refreshContent(elm.dataset.character);
                 });
             });
-            }
+        }
     });
 
 
