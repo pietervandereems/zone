@@ -4,6 +4,7 @@
     'use strict';
     var db = new PouchDB('zone'),
         characters = {},
+        elements,
         refreshContent;
 
     refreshContent = function (character) {
@@ -18,7 +19,9 @@
 
     // ** Determine characters **
 
-    document.querySelectorAll('[data-character]').forEach(function (elm) {
+    elements = document.querySelectorAll('[data-character]');
+    Object.keys(elements).forEach(function (item) {
+        var elm = elements(item);
         characters[elm.dataset.character] = {
             node: elm
         };
