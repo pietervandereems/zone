@@ -19,29 +19,33 @@
 
     // ** Determine characters **
 
-    elements = document.querySelectorAll('[data-character]');
-    Object.keys(elements).forEach(function (item) {
-        var elm = elements(item);
-        characters[elm.dataset.character] = {
-            node: elm
-        };
-        db.query({
-            map: function (doc, emit) {
-                emit(doc.name);
+    document.addEventListener('readystatechange', function () {
+        if (document.readyState === 'interactive') {
+            elements = document.querySelectorAll('[data-character]');
+            Object.keys(elements).forEach(function (item) {
+                var elm = elements[item];
+                characters[elm.dataset.character] = {
+                    node: elm
+                };
+                db.query({
+                    map: function (doc, emit) {
+                        emit(doc.name);
+                    }
+                }, {
+                    reduce: false
+                }, {
+                    key: elm.dataset.character
+                }, function (err, response) {
+                    if (err) {
+                        console.error('Error querying database for character', elm.dataset.character, err);
+                        return;
+                    }
+                    console.log(response);
+        //            characters[elm.dataset.character].docId = result
+        //            refreshContent()
+                });
+            });
             }
-        }, {
-            reduce: false
-        }, {
-            key: elm.dataset.character
-        }, function (err, response) {
-            if (err) {
-                console.error('Error querying database for character', elm.dataset.character, err);
-                return;
-            }
-            console.log(response);
-//            characters[elm.dataset.character].docId = result
-//            refreshContent()
-        });
     });
 
 
