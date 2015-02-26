@@ -61,8 +61,10 @@
                         console.error('Error querying database for character', elm.dataset.character, err);
                         return;
                     }
-                    characters[elm.dataset.character].docId = response.rows[0].id;
-                    refreshContent(elm.dataset.character);
+                    if (Array.isArray(response.rows) && response.rows.length > 0) {
+                        characters[elm.dataset.character].docId = response.rows[0].id;
+                        refreshContent(elm.dataset.character);
+                    }
                 });
             });
             addCharacterListeners();
