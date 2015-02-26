@@ -9,9 +9,34 @@
         refreshContent,
         refreshAll,
         addCharacterListeners,
-        saveChange;
+        saveChange,
+        queryCharacter;
+
+    queryCharacter = function (character) {
+        db.query({
+            map: function (doc, emit) {
+                emit(doc.name);
+            },
+            reduce: false
+        }, {
+            key: character
+        }, function (err, response) {
+            if (err) {
+                console.error('Error querying database for character', character, err);
+                return;
+            }
+            if (Array.isArray(response.rows) && response.rows.length > 0) {
+                characters[character].docId = response.rows[0].id;
+                refreshContent(character);
+            }
+        });
+    };
 
     refreshContent = function (character) {
+        if (!characters[character].docId) {
+            queryCharacter(character);
+            return;
+        }
         db.get(characters[character].docId, function (err, doc) {
             if (err) {
                 console.error('Error getting character doc', {character: character, docId: characters[character].docId, error: err});
@@ -24,7 +49,6 @@
 
     refreshAll = function () {
         Object.keys(characters).forEach(function (key) {
-            console.log('refreshing key', key);
             refreshContent(key);
         });
     };
@@ -36,6 +60,10 @@
         db.put(charInfo.doc, charInfo.docId, charInfo.doc._rev, function (err, response) {
             if (err) {
                 console.error('Error saving doc', charInfo, err);
+                if (err.doc && err.doc._rev) {
+                    charInfo.doc._rev = err.doc._rev;
+                }
+                return;
             }
             if (response.rev) {
                 charInfo.doc._rev = response.rev;
@@ -47,8 +75,11 @@
     addCharacterListeners = function () {
         Object.keys(characters).forEach(function (key) {
             var character = characters[key];
-            character.node.addEventListener('blur', saveChange);
-            character.node.addEventListener('focusout', saveChange);
+            if (typeof character.node.onblur !== 'undefined') {  // try to detect if the blur event is supported, not fullproof
+                character.node.addEventListener('blur', saveChange);
+            } else {
+                character.node.addEventListener('focusout', saveChange);
+            }
         });
     };
     // ** Determine characters **
@@ -63,23 +94,7 @@
                     characters[elm.dataset.character] = {
                         node: elm
                     };
-                    db.query({
-                        map: function (doc, emit) {
-                            emit(doc.name);
-                        },
-                        reduce: false
-                    }, {
-                        key: elm.dataset.character
-                    }, function (err, response) {
-                        if (err) {
-                            console.error('Error querying database for character', elm.dataset.character, err);
-                            return;
-                        }
-                        if (Array.isArray(response.rows) && response.rows.length > 0) {
-                            characters[elm.dataset.character].docId = response.rows[0].id;
-                            refreshContent(elm.dataset.character);
-                        }
-                    });
+                    queryCharacter(elm.dataset.character);
                 }
             });
             addCharacterListeners();
@@ -92,7 +107,7 @@
     // *
 
     // ** Start replications **
-    db.replicate.from('https://zone.mekton.nl/db/zone', {live: true, filter: 'zone/characters', retry: true})
+    db.replicate.from('https://zone.mekton.nl/db/zone', {live: true, doc_ids: ['01f2fd12e76c1cd8f97fa093dd000841'], retry: true}) // Since filter is not working at the moment, use a predetermined list of doc ids
         .on('error', function (err) {
             console.error('Error replicating from zone', err);
         })
