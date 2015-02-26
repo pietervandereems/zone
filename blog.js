@@ -5,6 +5,7 @@
     var db = new PouchDB('zone'),
         characters = {},
         elements,
+        firstTimePaused = false,
         refreshContent,
         refreshAll,
         addCharacterListeners,
@@ -97,7 +98,10 @@
                 console.error('Error replicating from zone (paused)', err);
                 return;
             }
-            refreshAll();
+            if (!firstTimePaused) {
+                firstTimePaused = true;
+                refreshAll();
+            }
         })
         .on('change', function (info) {
             if (info.ok && Array.isArray(info.docs)) {
