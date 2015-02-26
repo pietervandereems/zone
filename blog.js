@@ -33,9 +33,12 @@
     saveChange = function (ev) {
         var charInfo = characters[ev.target.dataset.character];
         charInfo.doc.blog = charInfo.node.innerHTML.replace('<script', 'nope');
-        db.put(charInfo.doc, charInfo.docId, charInfo.doc._rev, function (err) {
+        db.put(charInfo.doc, charInfo.docId, charInfo.doc._rev, function (err, response) {
             if (err) {
                 console.error('Error saving doc', charInfo, err);
+            }
+            if (response.rev) {
+                charInfo.doc._rev = response.rev;
             }
         });
     };
