@@ -1,11 +1,13 @@
 /*global PouchDB*/
-/*jslint browser:true*/
+/*jslint browser:true, nomen:true*/
 (function () {
     'use strict';
     var db = new PouchDB('zone'),
         characters = {},
         elements,
-        refreshContent;
+        refreshContent,
+        addCharacterListeners,
+        saveChange;
 
     refreshContent = function (character) {
         db.get(characters[character].docId, function (err, doc) {
@@ -13,10 +15,29 @@
                 console.error('Error getting character doc', {character: character, docId: characters[character].docId, error: err});
                 return;
             }
-            characters[character].node.innerHTML = doc.blog;
+            characters[character].node.innerHTML = doc.blog.replace('<script', 'nope');
+            characters[character].doc = doc;
         });
     };
 
+    // Save changes to the database
+    saveChange = function (ev) {
+        var charInfo = characters[ev.target.dataset.character];
+        charInfo.doc.blog = charInfo.node.innerHTML.replace('<script', 'nope');
+        db.put(charInfo.doc, charInfo.docId, charInfo.doc._rev, function (err) {
+            if (err) {
+                console.error('Error saving doc', charInfo, err);
+            }
+        });
+    };
+
+    // Listen on the character fields to save changes.
+    addCharacterListeners = function () {
+        characters.forEach(function (character) {
+            character.node.addEventListener('blur', saveChange);
+            character.node.addEventListener('focusout', saveChange);
+        });
+    };
     // ** Determine characters **
 
     document.addEventListener('readystatechange', function () {
@@ -43,8 +64,11 @@
                     refreshContent(elm.dataset.character);
                 });
             });
+            addCharacterListeners();
         }
     });
+
+
 
 
     // *
