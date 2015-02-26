@@ -33,7 +33,8 @@
 
     // Listen on the character fields to save changes.
     addCharacterListeners = function () {
-        characters.forEach(function (character) {
+        Object.keys(characters).forEach(function (key) {
+            var character = characters[key];
             character.node.addEventListener('blur', saveChange);
             character.node.addEventListener('focusout', saveChange);
         });
