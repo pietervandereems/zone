@@ -6,6 +6,7 @@
         characters = {},
         elements,
         refreshContent,
+        refreshAll,
         addCharacterListeners,
         saveChange;
 
@@ -17,6 +18,13 @@
             }
             characters[character].node.innerHTML = doc.blog.replace('<script', 'nope');
             characters[character].doc = doc;
+        });
+    };
+
+    refreshAll = function () {
+        Object.keys(characters).forEach(function (key) {
+            console.log('refreshing key', key);
+            refreshContent(key);
         });
     };
 
@@ -75,12 +83,9 @@
     });
 
 
-
-
     // *
     // ** Database
     // *
-
 
     // ** Start replications **
     db.replicate.from('https://zone.mekton.nl/db/zone', {live: true, filter: 'zone/characters', retry: true})
@@ -92,7 +97,7 @@
                 console.error('Error replicating from zone (paused)', err);
                 return;
             }
-            console.log('paused', arguments);
+            refreshAll();
         })
         .on('change', function (info) {
             if (info.ok && Array.isArray(info.docs)) {
