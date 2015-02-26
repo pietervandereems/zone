@@ -5,7 +5,6 @@
     var db = new PouchDB('zone'),
         characters = {},
         elements,
-        initialReplicationDone = false,
         refreshContent;
 
     refreshContent = function (character) {
@@ -63,10 +62,13 @@
                 console.error('Error replicating from zone (paused)', err);
                 return;
             }
-            initialReplicationDone = true;
         })
         .on('change', function (info) {
-            console.log('change from', info, arguments);
+            if (info.ok && Array.isArray(info.docs)) {
+                info.docs.forEach(function (doc) {
+                    refreshContent(doc.name);
+                });
+            }
         });
     db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
         .on('error', function (err) {
