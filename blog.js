@@ -45,27 +45,30 @@
         if (document.readyState === 'interactive') {                // Only get all characters after the dom is ready
             elements = document.querySelectorAll('[data-character]');
             Object.keys(elements).forEach(function (item) {
-                var elm = elements[item];
-                characters[elm.dataset.character] = {
-                    node: elm
-                };
-                db.query({
-                    map: function (doc, emit) {
-                        emit(doc.name);
-                    },
-                    reduce: false
-                }, {
-                    key: elm.dataset.character
-                }, function (err, response) {
-                    if (err) {
-                        console.error('Error querying database for character', elm.dataset.character, err);
-                        return;
-                    }
-                    if (Array.isArray(response.rows) && response.rows.length > 0) {
-                        characters[elm.dataset.character].docId = response.rows[0].id;
-                        refreshContent(elm.dataset.character);
-                    }
-                });
+                var elm;
+                if (item !== 'length') { // In FF this elements is a NodeList (not an array) in Chromium it is an array so it includes a length item
+                    elm = elements[item];
+                    characters[elm.dataset.character] = {
+                        node: elm
+                    };
+                    db.query({
+                        map: function (doc, emit) {
+                            emit(doc.name);
+                        },
+                        reduce: false
+                    }, {
+                        key: elm.dataset.character
+                    }, function (err, response) {
+                        if (err) {
+                            console.error('Error querying database for character', elm.dataset.character, err);
+                            return;
+                        }
+                        if (Array.isArray(response.rows) && response.rows.length > 0) {
+                            characters[elm.dataset.character].docId = response.rows[0].id;
+                            refreshContent(elm.dataset.character);
+                        }
+                    });
+                }
             });
             addCharacterListeners();
         }
@@ -89,6 +92,7 @@
                 console.error('Error replicating from zone (paused)', err);
                 return;
             }
+            console.log('paused', arguments);
         })
         .on('change', function (info) {
             if (info.ok && Array.isArray(info.docs)) {
