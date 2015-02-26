@@ -107,7 +107,14 @@
     // *
 
     // ** Start replications **
-    db.replicate.from('https://zone.mekton.nl/db/zone', {live: true, doc_ids: ['01f2fd12e76c1cd8f97fa093dd000841'], retry: true}) // Since filter is not working at the moment, use a predetermined list of doc ids
+    db.replicate.from('https://zone.mekton.nl/db/zone', {
+        live: true,
+        doc_ids: [
+            '01f2fd12e76c1cd8f97fa093dd000841',
+            '01f2fd12e76c1cd8f97fa093dd00cb2a',
+            '01f2fd12e76c1cd8f97fa093dd00cc78'
+        ], // Since filter is not working at the moment, use a predetermined list of doc ids
+        retry: true})
         .on('error', function (err) {
             console.error('Error replicating from zone', err);
         })
