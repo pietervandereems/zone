@@ -112,7 +112,9 @@
         doc_ids: [
             '01f2fd12e76c1cd8f97fa093dd000841',
             '01f2fd12e76c1cd8f97fa093dd00cb2a',
-            '01f2fd12e76c1cd8f97fa093dd00cc78'
+            '01f2fd12e76c1cd8f97fa093dd00cc78',
+            '01f2fd12e76c1cd8f97fa093dd00dd2a',
+            '01f2fd12e76c1cd8f97fa093dd00e83b'
         ], // Since filter is not working at the moment, use a predetermined list of doc ids
         retry: true})
         .on('error', function (err) {
