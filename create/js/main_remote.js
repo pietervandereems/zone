@@ -1,11 +1,10 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-3.2.0.min'], function (Pouchdb) {
+requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     'use strict';
     var db = new Pouchdb('mekton'),
-        charDb = new Pouchdb('localChars'),
+        npcMode = false,
         replicator,
-        initialPhase = true,
         localCharacter = {},
         elements = {},
         elmDefaults = {},
@@ -47,6 +46,7 @@ requirejs(['pouchdb-3.2.0.min'], function (Pouchdb) {
     elements.gear = document.getElementById('gear');
     elements.install = document.getElementById('install');
     elements.consol = document.getElementById('consol');
+    elements.h1 = document.querySelector('h1');
     elmDefaults.stats = '<p>Stats</p>';
     elmDefaults.skills = '<caption>Skills</caption>';
     elmDefaults.gear = '<caption>Gear</caption>';
@@ -461,8 +461,7 @@ requirejs(['pouchdb-3.2.0.min'], function (Pouchdb) {
         if (localCharacter.name && localCharacter.id && localCharacter.name === elements.name.value) {
             if (window.confirm('Overwrite existing character? (name is the same)')) {
                 character.archetype = elements.charType.value;
-console.log('character', character);
-                charDb.put(character, character._id, character._rev, function (err) {
+                db.put(character, character._id, character._rev, function (err) {
                     if (err) {
                         console.error('Error overwriting character', err);
                         return;
@@ -473,8 +472,8 @@ console.log('character', character);
         } else {
             character.name = elements.name.value;
             character.archetype = elements.charType.value;
-console.log('character', character);
-            charDb.post(character, function (err) {
+            character.type = npcMode?'npc':'pc';
+            db.post(character, function (err) {
                 if (err) {
                     console.error('Error saving new character', err);
                 }
@@ -487,7 +486,7 @@ console.log('character', character);
         if (event.target.value === '') {
             return;
         }
-        charDb.get(event.target.value, function (err, doc) {
+        db.get(event.target.value, function (err, doc) {
             var opts,
                 index;
             if (err) {
@@ -520,6 +519,13 @@ console.log('character', character);
         });
     });
 
+    // npc switch
+    elements.h1.addEventListener('dblclick', function () {
+        console.log('Switching to PC/NPC mode');
+        npcMode = true;
+        updateSavedChar();
+    });
+
     // **************************************************************************************************
     // Update
     // **************************************************************************************************
@@ -547,13 +553,17 @@ console.log('character', character);
 
     // Fill saved characters selector
     updateSavedChar = function () {
-        charDb.query('local/names', function (err, list) {
+        var view = 'local/names';
+        if (npcMode) {
+            view = 'local/namesPcNpc';
+        }
+        db.query(view, function (err, list) {
             var options = '';
             if (err) {
-                if (err.status && err.message && err.status === 404 && err.message === 'missing') {
+                if (err.status && err.message && err.status === 404) {
                     addView('local', updateSavedChar);
                 } else {
-                    console.error('Error getting view local/names', err);
+                    console.error('Error getting view ', view, err);
                 }
                 return;
             }
@@ -608,7 +618,7 @@ console.log('character', character);
     addView = function (view, cb) {
         switch (view) {
         case 'local':
-            charDb.put({
+            db.put({
                 '_id': '_design/local',
                 'views': {
                     'names': {
@@ -625,43 +635,33 @@ console.log('character', character);
             break;
         }
     };
-    // Get the last sequence nr and start listening for new changes.
-    charDb.info(function (err, info) {
-        if (err) {
-            console.error('Error getting localChars database info', err);
-            info = {update_seq: 0};
-        }
-        updateSavedChar();
-        // Listen to changes to local characters database
-        // note: info seems to not give us the last sequence nr.
-        charDb.changes({continuous: true, since: info.update_seq})
-            .on('change', function () {
-                if (!initialPhase) {    // we are only interested in changes after the database has been 'read' completely. Possibly a pouchdb problem?
-                    updateSavedChar();
-                }
-            })
-            .on('error', function (err) {
-                console.error('Error with charDb change', err);
-            })
-            .on('uptodate', function () {
-                initialPhase = false;
-                updateSavedChar();
-            });
-    });
-    // Update local mekton database, and listen to replicate events
+
     startReplicator = function () {
-        replicator = Pouchdb.replicate('https://zone.mekton.nl/db/zone', 'mekton', {live: true, filter: 'mekton/typedDocs'})
-            .on('uptodate', function () {
+        replicator = db.replicate.from('https://zone.mekton.nl/db/zone', {
+            live: true,
+            filter: 'mekton/typedDocs',
+            retry: true
+        })
+            .on('error', function (err) {
+                console.error('Error replicating from zone', err);
+            })
+            .on('paused', function (err) {
+                if (err) {
+                    console.error('Error replicating from zone (paused)', err);
+                }
+                updateSavedChar();
                 updateSelection();
             })
-            .on('error', function (err) {
-                console.error('error', err);
-                if (err.status && err.status === 405) { // We could be in offline mode, render what we have
-                    updateSelection();
-                }
+            .on('change', function () {
+                updateSelection();
+                updateSavedChar();
             })
             .on('complete', function () { // will also be called on a replicator.cancel()
                 updateSelection();
+            });
+        db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
+            .on('error', function (err) {
+                console.error('Error replicating to zone', err);
             });
     };
 
