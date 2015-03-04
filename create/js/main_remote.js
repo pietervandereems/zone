@@ -43,6 +43,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     elements.name = document.getElementById('name');
     elements.saved = document.getElementById('saved');
     elements.save = document.getElementById('save');
+    elements.generate = document.getElementById('generate');
     elements.gear = document.getElementById('gear');
     elements.install = document.getElementById('install');
     elements.consol = document.getElementById('consol');
@@ -472,7 +473,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         } else {
             character.name = elements.name.value;
             character.archetype = elements.charType.value;
-            character.type = npcMode?'npc':'pc';
+            character.type = npcMode ? 'npc' : 'pc';
             db.post(character, function (err) {
                 if (err) {
                     console.error('Error saving new character', err);
@@ -524,6 +525,26 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         console.log('Switching to PC/NPC mode');
         npcMode = true;
         updateSavedChar();
+    });
+
+    // Generate a name
+    elements.generate.addEventListener('click', function (ev) {
+        console.log('click');
+        var xhr = new XMLHttpRequest();
+
+        ev.preventDefault();
+
+        xhr.addEventListener('load', function () {
+            var elm,
+                plains;
+            elm = document.createElement('div');
+            elm.innerHTML = this.responseText;
+            plains = elm.querySelectorAll('.plain');
+            console.log('plains', plains);
+            elements.name.value = plains[0].innerHTML + ' ' + plains[1].innerHTML;
+        });
+        xhr.open('GET', '/names/');
+        xhr.send();
     });
 
     // **************************************************************************************************
