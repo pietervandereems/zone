@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-3.2.0.min'], function (Pouchdb) {
+requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     'use strict';
     var db = new Pouchdb('mekton'),
         charDb = new Pouchdb('localChars'),
