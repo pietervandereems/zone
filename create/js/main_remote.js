@@ -11,6 +11,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         character = {},
         checkRequest,
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
+        charactaristicsToKeep = ['Lifepath', 'Traits', 'archetype', 'edge', 'gear', 'name', 'skills', 'stats', 'type'],
         updateSelection,
         updateSavedChar,
         generateStats,
@@ -31,6 +32,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         addView,
         addInstallButton,
         setMsg,
+        cleanCharacter,
         startReplicator;
 
     // **************************************************************************************************
@@ -116,6 +118,14 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         window.setTimeout(function () {
             elements.consol.innerHTML = '';
         }, 5000);
+    };
+
+    cleanCharacter = function () {
+        Object.keys(character).forEach(function (charactaristic) {
+            if (charactaristicsToKeep.indexOf(charactaristic) === -1) {
+                delete character[charactaristic];
+            }
+        });
     };
 
     // **************************************************************************************************
@@ -472,14 +482,20 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
                 });
             }
         } else {
-            delete character._id;
-            delete character._rev;
+            cleanCharacter();
             character.name = elements.name.value;
             character.archetype = elements.charType.value;
             character.type = npcMode ? 'npc' : 'pc';
-            db.post(character, function (err) {
+            db.post(character, function (err, result) {
                 if (err) {
                     console.error('Error saving new character', err);
+                    return;
+                }
+                if (result && result.ok) {
+                    localCharacter.id = result.id;
+                    localCharacter.rev = result.rev;
+                    localCharacter.name = character.name;
+                    localCharacter.archetype = character.archetype;
                 }
             });
         }
@@ -525,14 +541,12 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
 
     // npc switch
     elements.h1.addEventListener('dblclick', function () {
-        console.log('Switching to PC/NPC mode');
         npcMode = true;
         updateSavedChar();
     });
 
     // Generate a name
     elements.generate.addEventListener('click', function (ev) {
-        console.log('click');
         var xhr = new XMLHttpRequest();
 
         ev.preventDefault();
@@ -543,7 +557,6 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
             elm = document.createElement('div');
             elm.innerHTML = this.responseText;
             plains = elm.querySelectorAll('.plain');
-            console.log('plains', plains);
             elements.name.value = plains[0].innerHTML + ' ' + plains[1].innerHTML;
         });
         xhr.open('GET', '/names/');
