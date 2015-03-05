@@ -3,15 +3,15 @@
 requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     'use strict';
     var db = new Pouchdb('mekton'),
-        npcMode = false,
+        charDb = new Pouchdb('localChars'),
         replicator,
+        initialPhase = true,
         localCharacter = {},
         elements = {},
         elmDefaults = {},
         character = {},
         checkRequest,
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
-        charactaristicsToKeep = ['Lifepath', 'Traits', 'archetype', 'edge', 'gear', 'name', 'skills', 'stats', 'type'],
         updateSelection,
         updateSavedChar,
         generateStats,
@@ -32,7 +32,6 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         addView,
         addInstallButton,
         setMsg,
-        cleanCharacter,
         startReplicator;
 
     // **************************************************************************************************
@@ -45,11 +44,9 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     elements.name = document.getElementById('name');
     elements.saved = document.getElementById('saved');
     elements.save = document.getElementById('save');
-    elements.generate = document.getElementById('generate');
     elements.gear = document.getElementById('gear');
     elements.install = document.getElementById('install');
     elements.consol = document.getElementById('consol');
-    elements.h1 = document.querySelector('h1');
     elmDefaults.stats = '<p>Stats</p>';
     elmDefaults.skills = '<caption>Skills</caption>';
     elmDefaults.gear = '<caption>Gear</caption>';
@@ -118,14 +115,6 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         window.setTimeout(function () {
             elements.consol.innerHTML = '';
         }, 5000);
-    };
-
-    cleanCharacter = function () {
-        Object.keys(character).forEach(function (charactaristic) {
-            if (charactaristicsToKeep.indexOf(charactaristic) === -1) {
-                delete character[charactaristic];
-            }
-        });
     };
 
     // **************************************************************************************************
@@ -418,7 +407,6 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
             return;
         }
         periods = Object.keys(character[type]);
-        periods.reverse();
         table += '<caption>' + type.capitalize() + '</caption>';
         periods.forEach(function (period) {
             table += '<tr><td>' + period + '</td><td>' + placeName(character[type][period].text) + '</td></tr>';
@@ -473,7 +461,8 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         if (localCharacter.name && localCharacter.id && localCharacter.name === elements.name.value) {
             if (window.confirm('Overwrite existing character? (name is the same)')) {
                 character.archetype = elements.charType.value;
-                db.put(character, character._id, character._rev, function (err) {
+console.log('character', character);
+                charDb.put(character, character._id, character._rev, function (err) {
                     if (err) {
                         console.error('Error overwriting character', err);
                         return;
@@ -482,20 +471,12 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
                 });
             }
         } else {
-            cleanCharacter();
             character.name = elements.name.value;
             character.archetype = elements.charType.value;
-            character.type = npcMode ? 'npc' : 'pc';
-            db.post(character, function (err, result) {
+console.log('character', character);
+            charDb.post(character, function (err) {
                 if (err) {
                     console.error('Error saving new character', err);
-                    return;
-                }
-                if (result && result.ok) {
-                    localCharacter.id = result.id;
-                    localCharacter.rev = result.rev;
-                    localCharacter.name = character.name;
-                    localCharacter.archetype = character.archetype;
                 }
             });
         }
@@ -506,7 +487,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         if (event.target.value === '') {
             return;
         }
-        db.get(event.target.value, function (err, doc) {
+        charDb.get(event.target.value, function (err, doc) {
             var opts,
                 index;
             if (err) {
@@ -539,35 +520,6 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         });
     });
 
-    // npc switch
-    elements.h1.addEventListener('dblclick', function () {
-        var elems = document.querySelectorAll('.notavailable');
-        npcMode = true;
-        Object.keys(elems).forEach(function (key) {
-            elems[key].classList.remove('notavailable');
-        });
-        elements.h1.innerHTML = 'Create NPC - Zone';
-        updateSavedChar();
-    });
-
-    // Generate a name
-    elements.generate.addEventListener('click', function (ev) {
-        var xhr = new XMLHttpRequest();
-
-        ev.preventDefault();
-
-        xhr.addEventListener('load', function () {
-            var elm,
-                plains;
-            elm = document.createElement('div');
-            elm.innerHTML = this.responseText;
-            plains = elm.querySelectorAll('.plain');
-            elements.name.value = plains[0].innerHTML + ' ' + plains[1].innerHTML;
-        });
-        xhr.open('GET', '/names/');
-        xhr.send();
-    });
-
     // **************************************************************************************************
     // Update
     // **************************************************************************************************
@@ -595,17 +547,13 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
 
     // Fill saved characters selector
     updateSavedChar = function () {
-        var view = 'local/names';
-        if (npcMode) {
-            view = 'local/namesPcNpc';
-        }
-        db.query(view, function (err, list) {
+        charDb.query('local/names', function (err, list) {
             var options = '';
             if (err) {
-                if (err.status && err.message && err.status === 404) {
+                if (err.status && err.message && err.status === 404 && err.message === 'missing') {
                     addView('local', updateSavedChar);
                 } else {
-                    console.error('Error getting view ', view, err);
+                    console.error('Error getting view local/names', err);
                 }
                 return;
             }
@@ -660,7 +608,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     addView = function (view, cb) {
         switch (view) {
         case 'local':
-            db.put({
+            charDb.put({
                 '_id': '_design/local',
                 'views': {
                     'names': {
@@ -677,33 +625,43 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
             break;
         }
     };
-
-    startReplicator = function () {
-        replicator = db.replicate.from('https://zone.mekton.nl/db/zone', {
-            live: true,
-            filter: 'mekton/typedDocs',
-            retry: true
-        })
-            .on('error', function (err) {
-                console.error('Error replicating from zone', err);
-            })
-            .on('paused', function (err) {
-                if (err) {
-                    console.error('Error replicating from zone (paused)', err);
-                }
-                updateSavedChar();
-                updateSelection();
-            })
+    // Get the last sequence nr and start listening for new changes.
+    charDb.info(function (err, info) {
+        if (err) {
+            console.error('Error getting localChars database info', err);
+            info = {update_seq: 0};
+        }
+        updateSavedChar();
+        // Listen to changes to local characters database
+        // note: info seems to not give us the last sequence nr.
+        charDb.changes({continuous: true, since: info.update_seq})
             .on('change', function () {
-                updateSelection();
+                if (!initialPhase) {    // we are only interested in changes after the database has been 'read' completely. Possibly a pouchdb problem?
+                    updateSavedChar();
+                }
+            })
+            .on('error', function (err) {
+                console.error('Error with charDb change', err);
+            })
+            .on('uptodate', function () {
+                initialPhase = false;
                 updateSavedChar();
+            });
+    });
+    // Update local mekton database, and listen to replicate events
+    startReplicator = function () {
+        replicator = Pouchdb.replicate('https://zone.mekton.nl/db/zone', 'mekton', {live: true, filter: 'mekton/typedDocs'})
+            .on('uptodate', function () {
+                updateSelection();
+            })
+            .on('error', function (err) {
+                console.error('error', err);
+                if (err.status && err.status === 405) { // We could be in offline mode, render what we have
+                    updateSelection();
+                }
             })
             .on('complete', function () { // will also be called on a replicator.cancel()
                 updateSelection();
-            });
-        db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
-            .on('error', function (err) {
-                console.error('Error replicating to zone', err);
             });
     };
 
