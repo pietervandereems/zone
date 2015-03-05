@@ -135,6 +135,10 @@ div {
     -ms-justify-content     : center;
 }
 
+.notavailable {
+    display: none;
+}
+
 /*
 Copyright 2014 Pieter van der Eems
 This file is part of CreateNPC
