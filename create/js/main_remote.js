@@ -408,6 +408,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
             return;
         }
         periods = Object.keys(character[type]);
+        periods.reverse();
         table += '<caption>' + type.capitalize() + '</caption>';
         periods.forEach(function (period) {
             table += '<tr><td>' + period + '</td><td>' + placeName(character[type][period].text) + '</td></tr>';
@@ -471,6 +472,8 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
                 });
             }
         } else {
+            delete character._id;
+            delete character._rev;
             character.name = elements.name.value;
             character.archetype = elements.charType.value;
             character.type = npcMode ? 'npc' : 'pc';
