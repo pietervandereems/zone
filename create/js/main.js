@@ -50,6 +50,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     elements.install = document.getElementById('install');
     elements.consol = document.getElementById('consol');
     elements.h1 = document.querySelector('h1');
+    elements.gm = document.getElementById('gm');
     elmDefaults.stats = '<p>Stats</p>';
     elmDefaults.skills = '<caption>Skills</caption>';
     elmDefaults.gear = '<caption>Gear</caption>';
@@ -391,6 +392,14 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
             elmStatsInner += '<li data-value="' + character.stats[stat] + '">' + stat.capitalize() + '</li>';
         });
         elements.stats.innerHTML = elmStatsInner + '</ul>';
+
+        // GM
+        elements.gm.innerHTML = '';
+        if (npcMode && character.gm) {
+            Object.keys(character.gm).forEach(function (item) {
+                elements.gm.innerHTML += '<p><strong>' + item + '</strong>: ' + character.gm[item] + '</p>';
+            });
+        }
     };
     // Skilllist needs to be retrieved asynchronously so a seperate function to display those.
     displaySkills = function () {
