@@ -1,9 +1,25 @@
+* + * {
+    margin-top: 0.5em;
+}
+
 body {
     background-image: url("../img/bg20.gif");
     background-color: black;
     color: silver;
+    margin: 0.5em;
+    margin-top: 0;
 }
 
+#topbar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    background-color: black;
+    padding: 0.5em;
+    margin-left: -0.5em;
+    margin-right: -0.5em;
+}
 
 /*
 Copyright 2014 Pieter van der Eems
