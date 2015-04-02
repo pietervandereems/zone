@@ -3,6 +3,7 @@
 requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     'use strict';
     var db = new Pouchdb('zone'),
+        remote = new Pouchdb('https://zone.mekton.nl/db/zone'),
         replicator,
         elements = {},
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
@@ -67,7 +68,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     // **************************************************************************************************
 
     startReplicator = function () {
-        replicator = db.replicate.from('https://zone.mekton.nl/db/zone', {
+        replicator = remote.replicate.to('zone', {
             live: true,
             filter: 'talk/talkers',
             retry: true,
