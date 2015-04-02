@@ -70,7 +70,8 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         replicator = db.replicate.from('https://zone.mekton.nl/db/zone', {
             live: true,
             filter: 'talk/talkers',
-            retry: true
+            retry: true,
+            include_docs: true
         })
             .on('error', function (err) {
                 console.error('Error replicating from zone', err);
