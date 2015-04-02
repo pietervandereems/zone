@@ -8,13 +8,17 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
         setMsg,
         setBatteryManagers,
-        startReplicator;
+        startReplicator,
+        showTalk;
 
     // **************************************************************************************************
     // Shortcuts to interface elements
     // **************************************************************************************************
 
     elements.consol = document.getElementById('consol');
+    elements.charac = document.getElementByid('characteristics');
+    elements.team = document.getElementByid('teamtalk');
+    elements.prive = document.getElementByid('privatetalk');
 
     // **************************************************************************************************
     // Extend
@@ -34,6 +38,26 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         }, 5000);
     };
     // **************************************************************************************************
+    // Display
+    // **************************************************************************************************
+    //
+
+    showTalk = function (targetElm, talk) {
+        var ul = document.createElement('ul');
+
+        talk.sort(function (a, b) {
+            return a.timestamp - b.timestamp;
+        });
+        talk.forEach(function (item) {
+            var li = document.createElement('li');
+            li.innerHTML = new Date(item.timestamp).toISOString() + ' - ' + item.text;
+            ul.appendChild(li);
+        });
+        targetElm.innerHTML = "";
+        targetElm.appendChild(ul);
+    };
+
+    // **************************************************************************************************
     // Event Listeners, for user interaction
     // **************************************************************************************************
 
@@ -45,7 +69,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     startReplicator = function () {
         replicator = db.replicate.from('https://zone.mekton.nl/db/zone', {
             live: true,
-            filter: 'mekton/typedDocs',
+            filter: 'talk/talkers',
             retry: true
         })
             .on('error', function (err) {
@@ -55,10 +79,13 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
                 if (err) {
                     console.error('Error replicating from zone (paused)', err);
                 }
+                console.log('paused');
             })
-            .on('change', function () {
+            .on('change', function (changed) {
+                console.log('changed', changed);
             })
             .on('complete', function () { // will also be called on a replicator.cancel()
+                console.log('complete');
             });
         db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
             .on('error', function (err) {
@@ -71,9 +98,6 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     // **************************************************************************************************
     // Start replication
     startReplicator();
-    // Clear fields
-    elements.name.value = '';
-
 
     // **************************************************************************************************
     // Offline usage, this is last to ensure everything is defined first
