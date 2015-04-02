@@ -16,9 +16,9 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     // **************************************************************************************************
 
     elements.consol = document.getElementById('consol');
-    elements.charac = document.getElementByid('characteristics');
-    elements.team = document.getElementByid('teamtalk');
-    elements.prive = document.getElementByid('privatetalk');
+    elements.charac = document.getElementById('characteristics');
+    elements.team = document.getElementById('teamtalk');
+    elements.prive = document.getElementById('privatetalk');
 
     // **************************************************************************************************
     // Extend
