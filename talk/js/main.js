@@ -13,7 +13,9 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             team: Object.create(Talk)
         },
         setMsg,
+        revSeq,
         setBatteryManagers,
+        updateTalks,
         startReplicator;
 
     // **************************************************************************************************
@@ -43,6 +45,10 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         }, 5000);
     };
 
+    revSeq = function (rev) {
+        return parseInt(rev.substr(0, rev.indexOf('-')), 10);
+    };
+
     // **************************************************************************************************
     // Event Listeners, for user interaction
     // **************************************************************************************************
@@ -51,6 +57,24 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // **************************************************************************************************
     // Database
     // **************************************************************************************************
+
+    updateTalks = function () {
+        Object.keys(talks).forEach(function (item) {
+            if (!talks[item].doc || !talks[item].doc._rev) { // no need to get doc if already available
+                db.get(talks[item].id)
+                    .then(function (doc) {
+                        if (talks[item].doc && talks[item].doc._rev &&
+                                (revSeq(talks.item.doc._rev) < revSeq(doc._rev))) { // in the mean time we might have already gotten a newer of the same document
+                            talks[item].doc = doc;
+                            talks.show();
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error('Error getting', item, 'with id', talks[item].id, ', err', err);
+                    });
+            }
+        });
+    };
 
     startReplicator = function () {
         replicator = remote.replicate.to('zone', {
@@ -67,18 +91,18 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                     console.error('Error replicating from zone (paused)', err);
                 }
                 console.log('paused');
+                updateTalks();
             })
             .on('change', function (changed) {
                 if (Array.isArray(changed.docs)) {
                     changed.docs.forEach(function (doc) {
-                        console.log('talks', talks);
                         if (doc._id === userId) {
                             talks.user.doc = doc;
-                            talks.user.show(elements.prive);
+                            talks.user.show();
                         }
                         if (doc._id === 'team') {
                             talks.team.doc = doc;
-                            talks.team.show(elements.team);
+                            talks.team.show();
                         }
                     });
                 }
@@ -95,6 +119,12 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // **************************************************************************************************
     // Main
     // **************************************************************************************************
+    // Tell talk which element is it's home
+    talks.user.element = elements.prive;
+    talks.team.element = elements.team;
+    // Tell talk which document it is linked to
+    talks.user.id = userId;
+    talks.team.id = 'team';
     // Start replication
     startReplicator();
 
