@@ -9,8 +9,8 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
         userId = '01f2fd12e76c1cd8f97fa093dd00cc78',
         talks = {
-            user: new Talk(),
-            team: new Talk()
+            user: Object.create(Talk),
+            team: Object.create(Talk)
         },
         setMsg,
         setBatteryManagers,
@@ -71,6 +71,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             .on('change', function (changed) {
                 if (Array.isArray(changed.docs)) {
                     changed.docs.forEach(function (doc) {
+                        console.log('talks', talks);
                         if (doc._id === userId) {
                             talks.user.doc = doc;
                             talks.user.show(elements.prive);
