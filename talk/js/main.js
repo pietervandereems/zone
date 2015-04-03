@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-master.min'], function (Pouchdb) {
+requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     'use strict';
     var db = new Pouchdb('zone'),
         remote = new Pouchdb('https://zone.mekton.nl/db/zone'),
@@ -8,10 +8,13 @@ requirejs(['pouchdb-master.min'], function (Pouchdb) {
         elements = {},
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
         userId = '01f2fd12e76c1cd8f97fa093dd00cc78',
+        talks = {
+            user: new Talk(),
+            team: new Talk()
+        },
         setMsg,
         setBatteryManagers,
-        startReplicator,
-        showTalk;
+        startReplicator;
 
     // **************************************************************************************************
     // Shortcuts to interface elements
@@ -38,27 +41,6 @@ requirejs(['pouchdb-master.min'], function (Pouchdb) {
         window.setTimeout(function () {
             elements.consol.innerHTML = '';
         }, 5000);
-    };
-    // **************************************************************************************************
-    // Display
-    // **************************************************************************************************
-    //
-
-    showTalk = function (targetElm, talk) {
-        var ul = document.createElement('ul');
-
-        talk.sort(function (a, b) {
-            var dateA = new Date(a.timestamp),
-                dateB = new Date(b.timestamp);
-            return dateA - dateB;
-        });
-        talk.forEach(function (item) {
-            var li = document.createElement('li');
-            li.innerHTML = new Date(item.timestamp).toISOString() + ' - ' + item.text;
-            ul.appendChild(li);
-        });
-        targetElm.innerHTML = "";
-        targetElm.appendChild(ul);
     };
 
     // **************************************************************************************************
@@ -87,14 +69,15 @@ requirejs(['pouchdb-master.min'], function (Pouchdb) {
                 console.log('paused');
             })
             .on('change', function (changed) {
-                console.log('changed', changed);
                 if (Array.isArray(changed.docs)) {
                     changed.docs.forEach(function (doc) {
                         if (doc._id === userId) {
-                            showTalk(elements.prive, doc.talk);
+                            talks.user.doc = doc;
+                            talks.user.show(elements.prive);
                         }
                         if (doc._id === 'team') {
-                            showTalk(elements.team, doc.talk);
+                            talks.team.doc = doc;
+                            talks.team.show(elements.team);
                         }
                     });
                 }
