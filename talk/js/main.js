@@ -7,6 +7,7 @@ requirejs(['pouchdb-master.min'], function (Pouchdb) {
         replicator,
         elements = {},
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
+        userId = '01f2fd12e76c1cd8f97fa093dd00cc78',
         setMsg,
         setBatteryManagers,
         startReplicator,
@@ -85,6 +86,13 @@ requirejs(['pouchdb-master.min'], function (Pouchdb) {
             })
             .on('change', function (changed) {
                 console.log('changed', changed);
+                if (Array.isArray(changed.docs)) {
+                    changed.docs.forEach(function (doc) {
+                        if (doc._id === userId) {
+                            showTalk(elements.prive, doc.talk);
+                        }
+                    });
+                }
             })
             .on('complete', function () { // will also be called on a replicator.cancel()
                 console.log('complete');
