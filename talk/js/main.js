@@ -48,7 +48,9 @@ requirejs(['pouchdb-master.min'], function (Pouchdb) {
         var ul = document.createElement('ul');
 
         talk.sort(function (a, b) {
-            return a.timestamp - b.timestamp;
+            var dateA = new Date(a.timestamp),
+                dateB = new Date(b.timestamp);
+            return dateA - dateB;
         });
         talk.forEach(function (item) {
             var li = document.createElement('li');
