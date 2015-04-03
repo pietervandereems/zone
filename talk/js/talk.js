@@ -9,7 +9,7 @@ define([], function () {
     // **************************************************************************************************
     //
 
-    showTalk = function (targetElm) {
+    showTalk = function () {
         var ul = document.createElement('ul'),
             talk = this.doc.talk;
 
@@ -23,8 +23,8 @@ define([], function () {
             li.innerHTML = new Date(item.timestamp).toISOString() + ' - ' + item.text;
             ul.appendChild(li);
         });
-        targetElm.innerHTML = "";
-        targetElm.appendChild(ul);
+        this.element.innerHTML = "";
+        this.element.appendChild(ul);
     };
 
     return {
