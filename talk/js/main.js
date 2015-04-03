@@ -91,7 +91,7 @@ requirejs(['pouchdb-master.min'], function (Pouchdb) {
                         if (doc._id === userId) {
                             showTalk(elements.prive, doc.talk);
                         }
-                        if (doc.id === 'team') {
+                        if (doc._id === 'team') {
                             showTalk(elements.team, doc.talk);
                         }
                     });
