@@ -1,6 +1,6 @@
 /*global define*/
 /*jslint browser:true*/
-define(['vagueTime.min'], function (vagueTime) {
+define([], function () {
     'use strict';
     var showTalk;
 
@@ -20,13 +20,12 @@ define(['vagueTime.min'], function (vagueTime) {
             return dateA - dateB;
         });
         talk.forEach(function (item) {
-            var li = document.createElement('li'),
-                vague = vagueTime({
-                    from: now,
-                    to: new Date(item.timestamp),
-                    lang: 'nl'
-                });
-            li.innerHTML = vague + ' - ' + item.text;
+            var li = document.createElement('li');
+            li.setAttribute('data-time', item.timestamp);
+            if (item.author) {
+                li.setAttribute('data-author', item.author);
+            }
+            li.innerHTML = item.text;
             ul.appendChild(li);
         });
         this.element.innerHTML = "";
