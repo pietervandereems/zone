@@ -63,10 +63,10 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             if (!talks[item].doc || !talks[item].doc._rev) { // no need to get doc if already available
                 db.get(talks[item].id)
                     .then(function (doc) {
-                        if (talks[item].doc && talks[item].doc._rev &&
-                                (revSeq(talks.item.doc._rev) < revSeq(doc._rev))) { // in the mean time we might have already gotten a newer of the same document
+                        if (!talks[item].doc || !talks[item].doc._rev ||
+                                !(revSeq(talks.item.doc._rev) < revSeq(doc._rev))) { // in the mean time we might have already gotten a newer of the same document, in that case, only update if we got something newer
                             talks[item].doc = doc;
-                            talks.show();
+                            talks[item].show();
                         }
                     })
                     .catch(function (err) {
