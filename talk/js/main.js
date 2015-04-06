@@ -13,7 +13,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             user: Object.create(Talk),
             team: Object.create(Talk)
         },
-        // Interface elements 
+        // Interface elements
         setElements,
         // Helper functions
         setMsg,
@@ -38,9 +38,6 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
-        // And tell talk what is inside the element on startup
-        talks.user.preset = elements.prive.innerHTML;
-        talks.team.preset = elements.team.innerHTML;
     };
 
     if (!document.getElementById('consol') ||
@@ -90,8 +87,8 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         };
     };
 
-    elements.team.qeurySelector('keypress', addOnEnter);
-    elements.prive.qeurySelector('keypress', addOnEnter);
+    elements.team.querySelector('keypress', addOnEnter);
+    elements.prive.querySelector('keypress', addOnEnter);
 
     // **************************************************************************************************
     // Database
