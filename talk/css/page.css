@@ -1,3 +1,4 @@
+@charset "utf-8";
 * + * {
     margin-top: 0.5em;
 }
@@ -48,14 +49,13 @@ section[data-talk] input {
 }
 
 section[data-talk="private"] li:before {
-    content: &#xe602;
+    content: '\e602  ';
     font-family: 'icomoon';
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
     text-transform: none;
     line-height: 1;
-    font-size: 25px;
 
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
