@@ -8,7 +8,9 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         replicator,
         elements = {},
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
-        userId = '01f2fd12e76c1cd8f97fa093dd00cc78',
+        users = {
+            current: '01f2fd12e76c1cd8f97fa093dd00cc78'
+        },
         talks = {
             user: Object.create(Talk),
             team: Object.create(Talk)
@@ -22,6 +24,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         addOnEnter,
         // Database functions
         updateTalks,
+        updateUsers,
         processChanges,
         startReplicator,
         // Device functions
@@ -36,6 +39,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         elements.charac = document.getElementById('characteristics');
         elements.team = document.querySelector('[data-talk="team"]');
         elements.prive = document.querySelector('[data-talk="private"]');
+        elements.user = document.querySelector('.topbar>input');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
@@ -94,7 +98,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             doc.talk.push({
                 timestamp: new Date().toISOString(),
                 text: ev.target.value,
-                author: userId
+                author: users.current
             });
             db.put(doc)
                 .then(function () {
@@ -131,10 +135,43 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         });
     };
 
+    updateUsers = function () {
+        db.allDocs({include_docs: true})
+            .then(function (docs) {
+                var changed = false,
+                    list = '';
+                if (Array.isArray(docs.rows)) {
+                    docs.rows.forEach(function (result) {
+                        var doc = result.docs;
+                        if (doc.type !== 'pc') {
+                            return;
+                        }
+                        if (!users[doc._id]) {
+                            users[doc._id] = {
+                                id: doc._id,
+                                rev: doc._rev,
+                                name: doc.name
+                            };
+                            changed = true;
+                        }
+                    });
+                }
+                if (changed) {
+                    Object.keys(users).forEach(function (userId) {
+                        list += '<option value="' + userId + '">' + users[userId].name + '</option>';
+                    });
+                    elements.user.innerHTML = list;
+                }
+            })
+            .catch(function (err) {
+                console.error('Error getting al local docs', err);
+            });
+    };
+
     processChanges = function (changed) {
         if (Array.isArray(changed.docs)) {
             changed.docs.forEach(function (doc) {
-                if (doc._id === userId) {
+                if (doc._id === users.current) {
                     talks.user.doc = doc;
                     talks.user.show();
                 }
@@ -161,6 +198,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                     console.error('Error replicating from zone (paused)', err);
                 }
                 updateTalks();
+                updateUsers();
             })
             .on('change', function (changed) {
                 processChanges(changed);
@@ -181,7 +219,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // Main
     // **************************************************************************************************
     // Tell talk which document it is linked to
-    talks.user.id = userId;
+    talks.user.id = users.current;
     talks.team.id = 'team';
     // Start replication
     startReplicator();
