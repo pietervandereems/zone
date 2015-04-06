@@ -16,7 +16,6 @@ define([], function () {
         }
         if (this.elm) {
             this.elm.replaceChild(element, this.elm.querySelector('ul'));
-            this.elm.innerHTML = this.preset || '';
             this.elm.appendChild(element);
         } else {
             toBeDisplayed = element;
