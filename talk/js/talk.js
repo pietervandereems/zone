@@ -10,9 +10,10 @@ define([], function () {
     // **************************************************************************************************
     // Display the element, needed because we may need to wait until the dom is ready to display.
     display = function (elm) {
-        if (this.element) {
-            this.element.innerHTML = this.preset || '';
-            this.element.appendChild(elm);
+        var self = this;
+        if (self.element) {
+            self.element.innerHTML = self.preset || '';
+            self.element.appendChild(elm);
         } else {
             window.setTimeout(function () {
                 display(elm);
