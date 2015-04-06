@@ -168,6 +168,20 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
             .on('error', function (err) {
                 console.error('Error replicating to zone', err);
+            })
+            .on('change', function (changed) {
+                if (Array.isArray(changed.docs)) {
+                    changed.docs.forEach(function (doc) {
+                        if (doc._id === userId) {
+                            talks.user.doc = doc;
+                            talks.user.show();
+                        }
+                        if (doc._id === 'team') {
+                            talks.team.doc = doc;
+                            talks.team.show();
+                        }
+                    });
+                }
             });
     };
 
