@@ -115,6 +115,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
 
     elements.user.addEventListener('change', function (ev) {
         users.current = ev.target.value;
+        talks.user.id = ev.target.value;
         updateTalks();
     });
 
@@ -124,11 +125,12 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
 
     updateTalks = function () {
         Object.keys(talks).forEach(function (item) {
-            if (!talks[item].doc || !talks[item].doc._rev) { // no need to get doc if already available
+            if (!talks[item].doc || !talks[item].doc._id || (talks[item].doc._id !== users.current || talks[item].doc._id !== 'team')) { // no need to get doc if already available
                 db.get(talks[item].id)
                     .then(function (doc) {
                         if (!talks[item].doc || !talks[item].doc._rev ||
-                                !(revSeq(talks.item.doc._rev) < revSeq(doc._rev))) { // in the mean time we might have already gotten a newer of the same document, in that case, only update if we got something newer
+                                !(revSeq(talks[item].doc._rev) < revSeq(doc._rev)) ||
+                                (talks[item].doc._id !== users.current || talks[item].doc._id !== 'team')) { // in the mean time we might have already gotten a newer of the same document, in that case, only update if we got something newer
                             talks[item].doc = doc;
                             talks[item].show();
                         }
