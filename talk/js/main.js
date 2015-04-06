@@ -2,7 +2,8 @@
 /*global requirejs*/
 requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     'use strict';
-    var db = new Pouchdb('zone'),
+    var // Internal variables
+        db = new Pouchdb('zone'),
         remote = new Pouchdb('https://zone.mekton.nl/db/zone'),
         replicator,
         elements = {},
@@ -12,12 +13,18 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             user: Object.create(Talk),
             team: Object.create(Talk)
         },
+        // Interface elements 
         setElements,
+        // Helper functions
         setMsg,
         revSeq,
-        setBatteryManagers,
+        // Event functions
+        addOnEnter,
+        // Database functions
         updateTalks,
-        startReplicator;
+        startReplicator,
+        // Device functions
+        setBatteryManagers;
 
     // **************************************************************************************************
     // Shortcuts to interface elements
@@ -37,10 +44,10 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     };
 
     if (!document.getElementById('consol') ||
-        !document.getElementById('characteristics') ||
-        !document.getElementById('teamtalk') ||
-        !document.getElementById('privatetalk')) {
-        document.addEventListener("DOMContentLoaded", function(event) {
+            !document.getElementById('characteristics') ||
+            !document.getElementById('teamtalk') ||
+            !document.getElementById('privatetalk')) {
+        document.addEventListener("DOMContentLoaded", function () {
             setElements();
         });
     } else {
@@ -72,7 +79,19 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // **************************************************************************************************
     // Event Listeners, for user interaction
     // **************************************************************************************************
+    addOnEnter = function () {
+        return function (event) {
+            if ((event.key && event.key === 'Enter') ||
+                    (event.keyIndentifier && event.keyIdentifier === 'Enter') ||
+                    (event.keyCode && event.keyCode === 13)
+                    ) {
+                console.log('enter', event);
+            }
+        };
+    };
 
+    elements.team.qeurySelector('keypress', addOnEnter);
+    elements.prive.qeurySelector('keypress', addOnEnter);
 
     // **************************************************************************************************
     // Database
