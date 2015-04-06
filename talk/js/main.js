@@ -30,6 +30,9 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
+        // And tell talk what is inside the element on startup
+        talks.user.preset = elements.prive.innerHTML;
+        talks.team.preset = elements.team.innerHTML;
     });
 
     // **************************************************************************************************

@@ -11,7 +11,7 @@ define([], function () {
     // Display the element, needed because we may need to wait until the dom is ready to display.
     display = function (elm) {
         if (this.element) {
-            this.element.innerHTML = "";
+            this.element.innerHTML = this.preset || '';
             this.element.appendChild(elm);
         } else {
             window.setTimeout(function () {
