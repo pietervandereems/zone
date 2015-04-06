@@ -12,6 +12,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             user: Object.create(Talk),
             team: Object.create(Talk)
         },
+        setElements,
         setMsg,
         revSeq,
         setBatteryManagers,
@@ -22,7 +23,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // Shortcuts to interface elements
     // **************************************************************************************************
 
-    document.addEventListener("DOMContentLoaded", function(event) {
+    setElements = function () {
         elements.consol = document.getElementById('consol');
         elements.charac = document.getElementById('characteristics');
         elements.team = document.getElementById('teamtalk');
@@ -33,7 +34,18 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         // And tell talk what is inside the element on startup
         talks.user.preset = elements.prive.innerHTML;
         talks.team.preset = elements.team.innerHTML;
-    });
+    };
+
+    if (!document.getElementById('consol') ||
+        !document.getElementById('characteristics') ||
+        !document.getElementById('teamtalk') ||
+        !document.getElementById('privatetalk')) {
+        document.addEventListener("DOMContentLoaded", function(event) {
+            setElements();
+        });
+    } else {
+        setElements();
+    }
 
     // **************************************************************************************************
     // Extend

@@ -2,22 +2,23 @@
 /*jslint browser:true*/
 define([], function () {
     'use strict';
-    var showTalk,
+    var toBeDisplayed,
+        showTalk,
         display;
 
     // **************************************************************************************************
     // Internal
     // **************************************************************************************************
     // Display the element, needed because we may need to wait until the dom is ready to display.
-    display = function (elm) {
-        var self = this;
-        if (self.element) {
-            self.element.innerHTML = self.preset || '';
-            self.element.appendChild(elm);
+    display = function (element) {
+        if (!element) {
+            return;
+        }
+        if (this.elm) {
+            this.elm.innerHTML = this.preset || '';
+            this.elm.appendChild(element);
         } else {
-            window.setTimeout(function () {
-                display(elm);
-            }, 200);
+            toBeDisplayed = element;
         }
     };
 
@@ -43,10 +44,14 @@ define([], function () {
             li.innerHTML = item.text;
             ul.appendChild(li);
         });
-        display(ul);
+        display.call(this, ul);
     };
 
     return {
-        show: showTalk
+        show: showTalk,
+        set element (e) {
+            this.elm = e;
+            display(toBeDisplayed);
+        }
     };
 });
