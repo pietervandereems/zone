@@ -9,7 +9,6 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         elements = {},
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
         users = {
-            current: '01f2fd12e76c1cd8f97fa093dd00cc78'
         },
         talks = {
             user: Object.create(Talk),
@@ -98,7 +97,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             doc.talk.push({
                 timestamp: new Date().toISOString(),
                 text: ev.target.value,
-                author: users.current
+                author: talks.user.id
             });
             db.put(doc)
                 .then(function () {
@@ -114,7 +113,6 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     elements.prive.querySelector('input').addEventListener('keypress', addOnEnter);
 
     elements.user.addEventListener('change', function (ev) {
-        users.current = ev.target.value;
         talks.user.id = ev.target.value;
         updateTalks();
     });
@@ -125,12 +123,12 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
 
     updateTalks = function () {
         Object.keys(talks).forEach(function (item) {
-            if (!talks[item].doc || !talks[item].doc._id || (talks[item].doc._id !== users.current || talks[item].doc._id !== 'team')) { // no need to get doc if already available
+            if (!talks[item].doc || !talks[item].doc._id || (talks[item].doc._id !== talks.user.id || talks[item].doc._id !== 'team')) { // no need to get doc if already available
                 db.get(talks[item].id)
                     .then(function (doc) {
                         if (!talks[item].doc || !talks[item].doc._rev ||
                                 !(revSeq(talks[item].doc._rev) < revSeq(doc._rev)) ||
-                                (talks[item].doc._id !== users.current || talks[item].doc._id !== 'team')) { // in the mean time we might have already gotten a newer of the same document, in that case, only update if we got something newer
+                                (talks[item].doc._id !== talks.user.id || talks[item].doc._id !== 'team')) { // in the mean time we might have already gotten a newer of the same document, in that case, only update if we got something newer
                             talks[item].doc = doc;
                             talks[item].show();
                         }
@@ -165,7 +163,11 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                 }
                 if (changed) {
                     Object.keys(users).forEach(function (userId) {
-                        list += '<option value="' + userId + '">' + users[userId].name + '</option>';
+                        var selected = '';
+                        if (userId === talks.user.id) {
+                            selected = ' selected="selected" ';
+                        }
+                        list += '<option value="' + userId + '"' + selected + '>' + users[userId].name + '</option>';
                     });
                     elements.user.innerHTML = list;
                 }
@@ -178,7 +180,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     processChanges = function (changed) {
         if (Array.isArray(changed.docs)) {
             changed.docs.forEach(function (doc) {
-                if (doc._id === users.current) {
+                if (doc._id === talks.user.id) {
                     talks.user.doc = doc;
                     talks.user.show();
                 }
@@ -226,7 +228,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // Main
     // **************************************************************************************************
     // Tell talk which document it is linked to
-    talks.user.id = users.current;
+    talks.user.id = '01f2fd12e76c1cd8f97fa093dd00dd2a';
     talks.team.id = 'team';
     // Start replication
     startReplicator();
