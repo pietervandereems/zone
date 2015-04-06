@@ -40,6 +40,13 @@ section[data-talk] {
     justify-content: space-around;
 }
 
+section[data-talk] ul {
+    order: 0;
+}
+section[data-talk] input {
+    order: 1;
+}
+
 /*
 Copyright 2014 Pieter van der Eems
 This file is part of CreateNPC
