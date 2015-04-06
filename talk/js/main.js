@@ -83,7 +83,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                 (ev.keyIndentifier && ev.keyIdentifier === 'Enter') ||
                 (ev.keyCode && ev.keyCode === 13)
                 ) {
-            switch (ev.parentElement.dataset.talk) {
+            switch (ev.target.parentElement.dataset.talk) {
             case 'private':
                 doc = talks.user.doc;
                 break;
@@ -91,7 +91,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                 doc = talks.team.doc();
                 break;
             }
-            doc.talks.push({
+            doc.talk.push({
                 timestamp: new Date().toISOString(),
                 text: ev.target.value,
                 author: userId
