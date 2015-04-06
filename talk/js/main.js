@@ -39,7 +39,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         elements.charac = document.getElementById('characteristics');
         elements.team = document.querySelector('[data-talk="team"]');
         elements.prive = document.querySelector('[data-talk="private"]');
-        elements.user = document.querySelector('.topbar>input');
+        elements.user = document.querySelector('#topbar>select');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
@@ -142,7 +142,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                     list = '';
                 if (Array.isArray(docs.rows)) {
                     docs.rows.forEach(function (result) {
-                        var doc = result.docs;
+                        var doc = result.doc;
                         if (doc.type !== 'pc') {
                             return;
                         }
