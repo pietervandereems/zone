@@ -42,8 +42,8 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
 
     if (!document.getElementById('consol') ||
             !document.getElementById('characteristics') ||
-            !document.getElementById('teamtalk') ||
-            !document.getElementById('privatetalk')) {
+            !document.querySelector('[data-talk="team"]') ||
+            !document.querySelector('[data-talk="private"]')) {
         document.addEventListener("DOMContentLoaded", function () {
             setElements();
         });
