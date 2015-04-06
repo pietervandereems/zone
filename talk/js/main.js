@@ -76,19 +76,17 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // **************************************************************************************************
     // Event Listeners, for user interaction
     // **************************************************************************************************
-    addOnEnter = function () {
-        return function (event) {
-            if ((event.key && event.key === 'Enter') ||
-                    (event.keyIndentifier && event.keyIdentifier === 'Enter') ||
-                    (event.keyCode && event.keyCode === 13)
-                    ) {
-                console.log('enter', event);
-            }
-        };
+    addOnEnter = function (ev) {
+        if ((ev.key && ev.key === 'Enter') ||
+                (ev.keyIndentifier && ev.keyIdentifier === 'Enter') ||
+                (ev.keyCode && ev.keyCode === 13)
+                ) {
+            console.log('enter', ev);
+        }
     };
 
-    elements.team.querySelector('keypress', addOnEnter);
-    elements.prive.querySelector('keypress', addOnEnter);
+    elements.team.querySelector('input').addEventListener('keypress', addOnEnter);
+    elements.prive.querySelector('input').addEventListener('keypress', addOnEnter);
 
     // **************************************************************************************************
     // Database
