@@ -9,7 +9,6 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         elements = {},
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
         userId = '01f2fd12e76c1cd8f97fa093dd00cc78',
-        userName = 'Renske',
         talks = {
             user: Object.create(Talk),
             team: Object.create(Talk)
@@ -23,6 +22,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         addOnEnter,
         // Database functions
         updateTalks,
+        processChanges,
         startReplicator,
         // Device functions
         setBatteryManagers;
@@ -97,8 +97,8 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                 author: userId
             });
             db.put(doc)
-                .then(function (response) {
-                    console.log('saved, response', response);
+                .then(function () {
+                    ev.target.value = '';
                 })
                 .catch(function (err) {
                     console.error('Error saving doc', err);
@@ -131,6 +131,21 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         });
     };
 
+    processChanges = function (changed) {
+        if (Array.isArray(changed.docs)) {
+            changed.docs.forEach(function (doc) {
+                if (doc._id === userId) {
+                    talks.user.doc = doc;
+                    talks.user.show();
+                }
+                if (doc._id === 'team') {
+                    talks.team.doc = doc;
+                    talks.team.show();
+                }
+            });
+        }
+    };
+
     startReplicator = function () {
         replicator = remote.replicate.to('zone', {
             live: true,
@@ -145,22 +160,10 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                 if (err) {
                     console.error('Error replicating from zone (paused)', err);
                 }
-                console.log('paused');
                 updateTalks();
             })
             .on('change', function (changed) {
-                if (Array.isArray(changed.docs)) {
-                    changed.docs.forEach(function (doc) {
-                        if (doc._id === userId) {
-                            talks.user.doc = doc;
-                            talks.user.show();
-                        }
-                        if (doc._id === 'team') {
-                            talks.team.doc = doc;
-                            talks.team.show();
-                        }
-                    });
-                }
+                processChanges(changed);
             })
             .on('complete', function () { // will also be called on a replicator.cancel()
                 console.log('complete');
@@ -170,18 +173,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                 console.error('Error replicating to zone', err);
             })
             .on('change', function (changed) {
-                if (Array.isArray(changed.docs)) {
-                    changed.docs.forEach(function (doc) {
-                        if (doc._id === userId) {
-                            talks.user.doc = doc;
-                            talks.user.show();
-                        }
-                        if (doc._id === 'team') {
-                            talks.team.doc = doc;
-                            talks.team.show();
-                        }
-                    });
-                }
+                processChanges(changed);
             });
     };
 
