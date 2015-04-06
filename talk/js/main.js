@@ -113,6 +113,11 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     elements.team.querySelector('input').addEventListener('keypress', addOnEnter);
     elements.prive.querySelector('input').addEventListener('keypress', addOnEnter);
 
+    elements.user.addEventListener('change', function (ev) {
+        users.current = ev.target.value;
+        updateTalks();
+    });
+
     // **************************************************************************************************
     // Database
     // **************************************************************************************************
