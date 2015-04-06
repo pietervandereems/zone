@@ -33,8 +33,8 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     setElements = function () {
         elements.consol = document.getElementById('consol');
         elements.charac = document.getElementById('characteristics');
-        elements.team = document.getElementById('teamtalk');
-        elements.prive = document.getElementById('privatetalk');
+        elements.team = document.querySelector('[data-talk="team"]');
+        elements.prive = document.querySelector('[data-talk="private"]');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;

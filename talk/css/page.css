@@ -33,6 +33,13 @@ body {
     right: auto;
 }
 
+section[data-talk] {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+}
+
 /*
 Copyright 2014 Pieter van der Eems
 This file is part of CreateNPC
