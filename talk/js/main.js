@@ -9,6 +9,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         elements = {},
         manifestUrl = 'https://zone.mekton.nl/manifest.webapp',
         userId = '01f2fd12e76c1cd8f97fa093dd00cc78',
+        userName = 'Renske',
         talks = {
             user: Object.create(Talk),
             team: Object.create(Talk)
@@ -77,11 +78,31 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // Event Listeners, for user interaction
     // **************************************************************************************************
     addOnEnter = function (ev) {
+        var doc;
         if ((ev.key && ev.key === 'Enter') ||
                 (ev.keyIndentifier && ev.keyIdentifier === 'Enter') ||
                 (ev.keyCode && ev.keyCode === 13)
                 ) {
-            console.log('enter', ev);
+            switch (ev.parentElement.dataset.talk) {
+            case 'private':
+                doc = talks.user.doc;
+                break;
+            case 'team':
+                doc = talks.team.doc();
+                break;
+            }
+            doc.talks.push({
+                timestamp: new Date().toISOString(),
+                text: ev.target.value,
+                author: userId
+            });
+            db.put(doc)
+                .then(function (response) {
+                    console.log('saved, response', response);
+                })
+                .catch(function (err) {
+                    console.error('Error saving doc', err);
+                });
         }
     };
 
