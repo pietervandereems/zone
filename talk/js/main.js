@@ -22,10 +22,15 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // Shortcuts to interface elements
     // **************************************************************************************************
 
-    elements.consol = document.getElementById('consol');
-    elements.charac = document.getElementById('characteristics');
-    elements.team = document.getElementById('teamtalk');
-    elements.prive = document.getElementById('privatetalk');
+    document.addEventListener("DOMContentLoaded", function(event) {
+        elements.consol = document.getElementById('consol');
+        elements.charac = document.getElementById('characteristics');
+        elements.team = document.getElementById('teamtalk');
+        elements.prive = document.getElementById('privatetalk');
+        // Tell talk which element is it's home
+        talks.user.element = elements.prive;
+        talks.team.element = elements.team;
+    });
 
     // **************************************************************************************************
     // Extend
@@ -119,9 +124,6 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // **************************************************************************************************
     // Main
     // **************************************************************************************************
-    // Tell talk which element is it's home
-    talks.user.element = elements.prive;
-    talks.team.element = elements.team;
     // Tell talk which document it is linked to
     talks.user.id = userId;
     talks.team.id = 'team';

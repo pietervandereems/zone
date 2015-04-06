@@ -2,17 +2,31 @@
 /*jslint browser:true*/
 define([], function () {
     'use strict';
-    var showTalk;
+    var showTalk,
+        display;
 
     // **************************************************************************************************
-    // Display
+    // Internal
     // **************************************************************************************************
-    //
+    // Display the element, needed because we may need to wait until the dom is ready to display.
+    display = function (elm) {
+        if (this.element) {
+            this.element.innerHTML = "";
+            this.element.appendChild(elm);
+        } else {
+            window.setTimeout(function () {
+                display(elm);
+            }, 200);
+        }
+    };
 
+    // **************************************************************************************************
+    // External
+    // **************************************************************************************************
+    // Show/update the talk inside the set element.
     showTalk = function () {
         var ul = document.createElement('ul'),
-            talk = this.doc.talk,
-            now = new Date();
+            talk = this.doc.talk;
 
         talk.sort(function (a, b) {
             var dateA = new Date(a.timestamp),
@@ -28,8 +42,7 @@ define([], function () {
             li.innerHTML = item.text;
             ul.appendChild(li);
         });
-        this.element.innerHTML = "";
-        this.element.appendChild(ul);
+        display(ul);
     };
 
     return {
