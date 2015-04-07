@@ -59,6 +59,10 @@ section[data-talk] li button {
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    border: none;
+    background: none;
+    color: inherit;
 }
 
 /*
