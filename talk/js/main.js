@@ -118,8 +118,17 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     });
 
     elements.prive.addEventListener('click', function (ev) {
-        console.log('click', ev);
-        console.log('parent data', ev.target.parent.dataset);
+        var teamTalk = talks.team.doc.talk,
+            msgElm = ev.target.parentElement;
+        teamTalk.push({
+            timestamp: msgElm.dataset.time,
+            author: msgElm.dataset.author,
+            text: msgElm.dataset.text
+        });
+        db.put(talks.team.doc)
+            .catch(function (err) {
+                console.error('Error saving team doc', err);
+            });
     });
 
     // **************************************************************************************************
