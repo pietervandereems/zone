@@ -117,6 +117,11 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         updateTalks();
     });
 
+    elements.prive.addEventListener('click', function (ev) {
+        console.log('click', ev);
+        console.log('parent data', ev.target.parent.dataset);
+    });
+
     // **************************************************************************************************
     // Database
     // **************************************************************************************************
