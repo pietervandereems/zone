@@ -91,7 +91,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                 doc = talks.user.doc;
                 break;
             case 'team':
-                doc = talks.team.doc();
+                doc = talks.team.doc;
                 break;
             }
             doc.talk.push({
