@@ -41,7 +41,7 @@ define([], function () {
             if (item.author) {
                 li.setAttribute('data-author', item.author);
             }
-            li.innerHTML = item.text;
+            li.innerHTML = '<input type="button">&#xe602;</button>' + item.text;
             ul.appendChild(li);
         });
         display.call(this, ul);

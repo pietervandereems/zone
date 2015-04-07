@@ -48,8 +48,7 @@ section[data-talk] input {
     order: 1;
 }
 
-section[data-talk="private"] li:before {
-    content: '\e602  ';
+section[data-talk="private"] li button {
     font-family: 'icomoon';
     font-style: normal;
     font-weight: normal;
