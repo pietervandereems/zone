@@ -40,7 +40,7 @@ define([], function () {
             li.setAttribute('data-time', item.timestamp);
             if (item.author) {
                 li.setAttribute('data-author', item.author);
-                li.style.color = '#' + item.author.substr(-6);
+                li.style.color = '#' + (Math.floor(parseInt(item.author.substr(-6).split('').reverse().join(''), 16) * 0.71)).toString(16);
             }
             li.setAttribute('data-text', item.text);
             li.innerHTML = '<button type="button">&#xe602;</button>' + item.text;
