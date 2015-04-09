@@ -120,15 +120,17 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     elements.prive.addEventListener('click', function (ev) {
         var teamTalk = talks.team.doc.talk,
             msgElm = ev.target.parentElement;
-        teamTalk.push({
-            timestamp: msgElm.dataset.time,
-            author: msgElm.dataset.author,
-            text: msgElm.dataset.text
-        });
-        db.put(talks.team.doc)
-            .catch(function (err) {
-                console.error('Error saving team doc', err);
+        if (ev.target.nodeName.toLowerCase() === 'button') {
+            teamTalk.push({
+                timestamp: msgElm.dataset.time,
+                author: msgElm.dataset.author,
+                text: msgElm.dataset.text
             });
+            db.put(talks.team.doc)
+                .catch(function (err) {
+                    console.error('Error saving team doc', err);
+                });
+        }
     });
 
     // **************************************************************************************************
