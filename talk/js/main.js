@@ -144,7 +144,9 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
 
     // Shrink section when button pressed
     document.querySelector('body').addEventListener('click', function (ev) {
-        ev.target.parentElement.querySelector('ul').classList.toggle('off');
+        if (ev.target.nodeName.toLowerCase() === 'button') {
+            ev.target.parentElement.querySelector('ul').classList.toggle('off');
+        }
     });
 
     // **************************************************************************************************

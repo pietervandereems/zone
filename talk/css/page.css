@@ -70,6 +70,10 @@ section[data-talk] li button {
     overflow: hidden;
 }
 
+[data-stat] {
+    text-transform: capitalize;
+}
+
 /*
 Copyright 2014 Pieter van der Eems
 This file is part of CreateNPC
