@@ -160,6 +160,10 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
                                 !(revSeq(talks[item].doc._rev) < revSeq(doc._rev)) ||
                                 (talks[item].doc._id !== talks.user.id || talks[item].doc._id !== 'team')) { // in the mean time we might have already gotten a newer of the same document, in that case, only update if we got something newer
                             talks[item].doc = doc;
+                            if (talks[item].doc._id !== 'team') {
+                                skills.doc = doc;
+                                skills.show();
+                            }
                             talks[item].show();
                         }
                     })
@@ -212,8 +216,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
             changed.docs.forEach(function (doc) {
                 if (doc._id === talks.user.id) {
                     talks.user.doc = doc;
-                    talks.user.show();
                     skills.doc = doc;
+                    talks.user.show();
                     skills.show();
                 }
                 if (doc._id === 'team') {

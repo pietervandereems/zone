@@ -39,7 +39,7 @@ define([], function () {
             li.innerHTML = stat;
             Object.keys(skills[stat]).forEach(function (skill) {
                 var liSkill = document.createElement('li');
-                liSkill.innerHTML = skill + ': ' + skills[stat][skill] + ' (' + (skills[stat][skills] + doc.stats[stat])  + ')';
+                liSkill.innerHTML = skill + ': ' + skills[stat][skill] + ' (' + (skills[stat][skill] + doc.stats[stat])  + ')';
                 ulSkill.appendChild(liSkill);
             });
             li.appendChild(ulSkill);
