@@ -65,6 +65,11 @@ section[data-talk] li button {
     color: inherit;
 }
 
+.off {
+    height: 0;
+    overflow: hidden;
+}
+
 /*
 Copyright 2014 Pieter van der Eems
 This file is part of CreateNPC

@@ -80,6 +80,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
     // **************************************************************************************************
     // Event Listeners, for user interaction
     // **************************************************************************************************
+    // Save text when enter has been pressed
     addOnEnter = function (ev) {
         var doc;
         if ((ev.key && ev.key === 'Enter') ||
@@ -109,17 +110,21 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
         }
     };
 
+    // enable addOnEnter on both input elements
     elements.team.querySelector('input').addEventListener('keypress', addOnEnter);
     elements.prive.querySelector('input').addEventListener('keypress', addOnEnter);
 
+    // Change the talks when another user is selected.
     elements.user.addEventListener('change', function (ev) {
         talks.user.id = ev.target.value;
         updateTalks();
     });
 
-    elements.prive.addEventListener('click', function (ev) {
+    // React to clicks with the private talk (to copy private message to team talk)
+    elements.prive.querySelector('ul').addEventListener('click', function (ev) {
         var teamTalk = talks.team.doc.talk,
             msgElm = ev.target.parentElement;
+        ev.preventDefault();
         if (ev.target.nodeName.toLowerCase() === 'button') {
             teamTalk.push({
                 timestamp: msgElm.dataset.time,
@@ -131,6 +136,11 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                     console.error('Error saving team doc', err);
                 });
         }
+    });
+
+    // Shrink section when button pressed
+    document.querySelector('body').addEventListener('click', function (ev) {
+        ev.target.parentElement.querySelector('ul').classList.toggle('off');
     });
 
     // **************************************************************************************************
