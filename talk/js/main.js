@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
+requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Skills) {
     'use strict';
     var // Internal variables
         db = new Pouchdb('zone'),
@@ -14,6 +14,7 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
             user: Object.create(Talk),
             team: Object.create(Talk)
         },
+        skills = Object.create(Skills),
         // Interface elements
         setElements,
         // Helper functions
@@ -35,17 +36,20 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
 
     setElements = function () {
         elements.consol = document.getElementById('consol');
-        elements.charac = document.getElementById('characteristics');
+        elements.stats = document.getElementById('stats');
+        elements.skills = document.getElementById('skills');
         elements.team = document.querySelector('[data-talk="team"]');
         elements.prive = document.querySelector('[data-talk="private"]');
         elements.user = document.querySelector('#topbar>select');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
+        // Tell skills which element is it's home
+        skills.element = elements.skills;
     };
 
     if (!document.getElementById('consol') ||
-            !document.getElementById('characteristics') ||
+            !document.getElementById('stats') ||
             !document.querySelector('[data-talk="team"]') ||
             !document.querySelector('[data-talk="private"]')) {
         document.addEventListener("DOMContentLoaded", function () {
@@ -209,6 +213,8 @@ requirejs(['pouchdb-master.min', 'talk'], function (Pouchdb, Talk) {
                 if (doc._id === talks.user.id) {
                     talks.user.doc = doc;
                     talks.user.show();
+                    skills.doc = doc;
+                    skills.show();
                 }
                 if (doc._id === 'team') {
                     talks.team.doc = doc;
