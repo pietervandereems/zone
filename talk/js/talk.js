@@ -37,16 +37,25 @@ define([], function () {
             return dateA - dateB;
         });
         talk.forEach(function (item) {
-            var li = document.createElement('li');
+            var li = document.createElement('li'),
+                color,
+                button = '';
             li.setAttribute('data-time', item.timestamp);
             li.setAttribute('data-text', item.text);
             if (item.author) { // every author in a different color
                 li.setAttribute('data-author', item.author);
-                li.style.color = '#' + (Math.floor(parseInt(item.author.substr(-6).split('').reverse().join(''), 16) * 0.71)).toString(16); // this calc gives me a nice spread of colors
+                color = (Math.floor(parseInt(item.author.substr(-6).split('').reverse().join(''), 16) * 0.71)).toString(16); // this calc gives me a nice spread of colors
+                if (color !== 'NaN') {
+                    while (color.length < 6) {
+                        color += '0';
+                    }
+                    li.style.color = '#' + color;
+                }
             }
             if (doc._id !== 'team') {
-                li.innerHTML = '<button type="button">&#xe602;</button>' + item.text;
+                button = '<button type="button">&#xe602;</button>';
             }
+            li.innerHTML = button + item.text;
             ul.appendChild(li);
         });
         display.call(this, ul);
