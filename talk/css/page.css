@@ -57,6 +57,11 @@ section[data-talk] li button {
     color: inherit;
 }
 
+/* use icomoon font for icons*/
+.icon {
+    font-family: 'icomoon';
+}
+
 /* hide the contents */
 .off {
     height: 0;
