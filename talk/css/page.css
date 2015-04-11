@@ -27,13 +27,7 @@ body {
     -webkit-transition: all 0.5s ease;
 }
 
-#login {
-    opacity: 0;
-    position: absolute;
-    left:auto;
-    right: auto;
-}
-
+/* both talks use flexbox */
 section[data-talk] {
     display: flex;
     flex-direction: column;
@@ -41,6 +35,7 @@ section[data-talk] {
     justify-content: space-around;
 }
 
+/* put the talk input at the end */
 section[data-talk] ul {
     order: 0;
 }
@@ -48,6 +43,7 @@ section[data-talk] input {
     order: 1;
 }
 
+/* Style the share button */
 section[data-talk] li button {
     font-family: 'icomoon';
     font-style: normal;
@@ -65,11 +61,13 @@ section[data-talk] li button {
     color: inherit;
 }
 
+/* hide the contents */
 .off {
     height: 0;
     overflow: hidden;
 }
 
+/* For skills, uppercase first letter */
 [data-stat] {
     text-transform: capitalize;
 }

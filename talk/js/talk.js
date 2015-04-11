@@ -28,7 +28,8 @@ define([], function () {
     // Show/update the talk inside the set element.
     showTalk = function () {
         var ul = document.createElement('ul'),
-            talk = this.doc.talk;
+            doc = this.doc,
+            talk = doc.talk;
 
         talk.sort(function (a, b) {
             var dateA = new Date(a.timestamp),
@@ -38,12 +39,14 @@ define([], function () {
         talk.forEach(function (item) {
             var li = document.createElement('li');
             li.setAttribute('data-time', item.timestamp);
-            if (item.author) {
-                li.setAttribute('data-author', item.author);
-                li.style.color = '#' + (Math.floor(parseInt(item.author.substr(-6).split('').reverse().join(''), 16) * 0.71)).toString(16);
-            }
             li.setAttribute('data-text', item.text);
-            li.innerHTML = '<button type="button">&#xe602;</button>' + item.text;
+            if (item.author) { // every author in a different color
+                li.setAttribute('data-author', item.author);
+                li.style.color = '#' + (Math.floor(parseInt(item.author.substr(-6).split('').reverse().join(''), 16) * 0.71)).toString(16); // this calc gives me a nice spread of colors
+            }
+            if (doc._id !== 'team') {
+                li.innerHTML = '<button type="button">&#xe602;</button>' + item.text;
+            }
             ul.appendChild(li);
         });
         display.call(this, ul);
