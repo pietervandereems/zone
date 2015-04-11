@@ -37,9 +37,9 @@ define([], function () {
             li.setAttribute('data-stat', stat);
             li.setAttribute('data-statvalue', doc.stats[stat]);
             li.innerHTML = stat;
-            Object.keys(skills[stat]).forEach(function (skill) {
+            skills[stat].forEach(function (skill) {
                 var liSkill = document.createElement('li');
-                liSkill.innerHTML = skill + ': ' + skills[stat][skill] + ' (' + (skills[stat][skill] + doc.stats[stat])  + ')';
+                liSkill.innerHTML = skill.name + ': ' + skill.level + ' (' + (skill.level + doc.stats[stat])  + ')';
                 ulSkill.appendChild(liSkill);
             });
             li.appendChild(ulSkill);

@@ -1,0 +1,11 @@
+{
+  "name": "Convert_skill",
+  "description": "convert skill field to new talk structure",
+  "version": "0.0.1",
+  "author": "Pieter van der Eems <pieter@eemco.nl>",
+  "dependencies": {
+    "cradle": ">= 0.6.6",
+    "nomnom": "*"
+  },
+  "engine": "node >= 0.10.0"
+}
