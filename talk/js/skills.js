@@ -39,7 +39,7 @@ define([], function () {
             li.innerHTML = stat;
             skills[stat].forEach(function (skill) {
                 var liSkill = document.createElement('li');
-                liSkill.innerHTML = skill.name + ': ' + skill.level + ' (' + (skill.level + doc.stats[stat])  + ')';
+                liSkill.innerHTML = skill.name + ': ' + skill.level + ' (' + (skill.level + doc.stats[stat])  + ')' + ' <label>ip: <input type="range" value=0 min=0 max=100></input></label>';
                 ulSkill.appendChild(liSkill);
             });
             li.appendChild(ulSkill);

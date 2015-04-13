@@ -1,5 +1,5 @@
 /*global define*/
-/*jslint browser:true*/
+/*jslint browser:true, nomen:true*/
 define([], function () {
     'use strict';
     var toBeDisplayed,
