@@ -36,7 +36,6 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
 
     setElements = function () {
         elements.consol = document.getElementById('consol');
-        elements.stats = document.getElementById('stats');
         elements.skills = document.getElementById('skills');
         elements.team = document.querySelector('[data-talk="team"]');
         elements.prive = document.querySelector('[data-talk="private"]');
@@ -49,7 +48,6 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
     };
 
     if (!document.getElementById('consol') ||
-            !document.getElementById('stats') ||
             !document.querySelector('[data-talk="team"]') ||
             !document.querySelector('[data-talk="private"]')) {
         document.addEventListener("DOMContentLoaded", function () {
