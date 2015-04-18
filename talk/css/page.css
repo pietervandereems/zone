@@ -73,6 +73,11 @@ section[data-talk] li button {
     text-transform: capitalize;
 }
 
+/* start with ip input as hidden */
+#skills label {
+    visibility: hidden;
+}
+
 /*
 Copyright 2014 Pieter van der Eems
 This file is part of CreateNPC
