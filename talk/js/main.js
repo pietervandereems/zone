@@ -20,6 +20,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         // Helper functions
         setMsg,
         revSeq,
+        findSkill,
+        addSkill,
         // Event functions
         addOnEnter,
         // Database functions
@@ -28,7 +30,6 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         processChanges,
         startReplicator,
         saveIps,
-        findSkill,
         // Device functions
         setBatteryManagers;
 
@@ -80,6 +81,31 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
 
     revSeq = function (rev) {
         return parseInt(rev.substr(0, rev.indexOf('-')), 10);
+    };
+
+    // Find the skill in the document by name and it's stat parent
+    findSkill = function (stat, skill) {
+        var found;
+        if (!skill) {
+            return false;
+        }
+        skills.doc.skills[stat].forEach(function (docSkill) {
+            if (found) {
+                return;
+            }
+            if (docSkill.name === skill) {
+                found = docSkill;
+            }
+        });
+        return found;
+    };
+
+    addSkill = function (elm) {
+        var li = document.createElement('li');
+        li.setAttribute('data-skill', '');
+        li.innerHTML = '<input type="text" name="name" placeholder="Ex: throwing"></input>';
+        li.innerHTML += '<label>ip: <input type="number" value=0 min=0 max=100 name="ip"></input></label>';
+        elm.querySelector('ul').appendChild(li);
     };
 
     // **************************************************************************************************
@@ -145,15 +171,24 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
 
     // Shrink section when button pressed
     document.querySelector('body').addEventListener('click', function (ev) {
-        if (ev.target.dataset.type && ev.target.dataset.type === 'shrink') {
+        if (!ev.target.dataset && !ev.target.dataset.type) {
+            return;
+        }
+        switch (ev.target.dataset.type) {
+        case 'shrink':
             ev.target.parentElement.querySelector('ul').classList.toggle('off');
+            break;
+        case 'addSkill':
+            addSkill(ev.target);
+            break;
         }
     });
 
-    // Show/hide the IP inputs
+    // Show/hide+save the IP inputs
     elements.editIp.addEventListener('click', function (ev) {
         var inputs = document.querySelectorAll('#skills label'),
             visibility;
+        ev.preventDefault();
         if (ev.target.innerHTML === 'e') {
             // button displays edit so switch to "editmode"
             visibility = 'visible';
@@ -176,20 +211,6 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
     // Database
     // **************************************************************************************************
 
-    // Find the skill in the document by name and it's stat parent
-    findSkill = function (stat, skill) {
-        var found;
-        skills.doc.skills[stat].forEach(function (docSkill) {
-            if (found) {
-                return;
-            }
-            if (docSkill.name === skill) {
-                found = docSkill;
-            }
-        });
-        return found;
-    };
-
     saveIps = function () {
         var skillList = elements.skills.querySelectorAll('ul>li>ul>li'),
             changed = false;
@@ -197,8 +218,35 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         Object.keys(skillList).forEach(function (skillListItem) {
             // the name of the stat is set as data-stat on the li that contains the stat name in the html.
             // the name of the skill is set as data-skill on the li that contains the skill in the html.
-            var skill = findSkill(skillList[skillListItem].parentElement.parentElement.dataset.stat, skillList[skillListItem].dataset.skill),
-                ip = skillList[skillListItem].querySelector('input').value;
+            var stat = skillList[skillListItem].parentElement.parentElement.dataset.stat,
+                skillName = skillList[skillListItem].dataset.skill,
+                skill = findSkill(stat, skillName),
+                ip = skillList[skillListItem].querySelector('input').value,
+                nwIp,
+                nwLevel;
+            if (!skill) {
+                // A new skill was added
+                nwIp = parseInt(skillList[skillListItem].querySelector('input[name="ip"]').value, 10);
+                nwLevel = 0;
+                while (nwIp >= (nwLevel * 10)) {
+                    if (nwLevel === 0 && nwIp < 10) {
+                        break;
+                    }
+                    if (nwLevel === 0) {
+                        nwLevel += 1;
+                        nwIp -= 10;
+                    } else {
+                        nwIp -= nwLevel * 10;
+                        nwLevel += 1;
+                    }
+                }
+                skills.doc.skill[stat].push({
+                    name: skillList[skillListItem].querySelector('input[name="name"]').value,
+                    level: nwLevel,
+                    ip: nwIp
+                });
+                changed = true;
+            }
             if (skill.ip !== ip) {
                 changed = true;
                 skill.ip = ip;

@@ -37,6 +37,7 @@ define([], function () {
             li.setAttribute('data-stat', stat);
             li.setAttribute('data-statvalue', doc.stats[stat]);
             li.innerHTML = stat;
+            li.innerHTML += ' <button data-type="addSkill">+</button>';
             skills[stat].forEach(function (skill) {
                 var liSkill = document.createElement('li');
                 liSkill.setAttribute('data-skill', skill.name);
