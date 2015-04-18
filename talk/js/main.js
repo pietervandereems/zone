@@ -40,7 +40,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         elements.team = document.querySelector('[data-talk="team"]');
         elements.prive = document.querySelector('[data-talk="private"]');
         elements.user = document.querySelector('#topbar>select');
-        elements.editIp = document.querySelector('.skills [data-type="edit"]');
+        elements.editIp = document.querySelector('#skills [data-type="edit"]');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
