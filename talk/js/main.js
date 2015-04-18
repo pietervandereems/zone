@@ -27,6 +27,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         updateUsers,
         processChanges,
         startReplicator,
+        saveIps,
+        findSkill,
         // Device functions
         setBatteryManagers;
 
@@ -163,7 +165,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
             // and switch icon
             ev.target.innerHTML = 'e';
             // and make sure to save
-            // FIXME: save
+            saveIps();
         }
         Object.keys(inputs).forEach(function (label) {
             inputs[label].style.visibility = visibility;
@@ -173,6 +175,41 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
     // **************************************************************************************************
     // Database
     // **************************************************************************************************
+
+    findSkill = function (stat, skill) {
+        var found;
+        skills.doc.skill[stat].forEach(function (docSkill) {
+            if (found) {
+                return;
+            }
+            if (docSkill.name === skill) {
+                found = docSkill;
+            }
+        });
+        return found;
+    };
+
+    saveIps = function () {
+        var statList = elements.skills.querySelector('ul').querySelectorAll('li'),
+            changed = false;
+        Object.keys(statList).forEach(function (statListItem) {
+            var statElm = statList[statListItem],
+                skillList = statElm.querySelector('ul').querySelectorAll('li');
+            Object.keys(skillList).forEach(function (skillListItem) {
+                var skill = findSkill(statElm.dataset.stat, skillList[skillListItem].dataset.skill),
+                    ip = skillList[skillListItem].querySelector('input').value;
+                if (skill.ip !== ip) {
+                    changed = true;
+                    skill.ip = ip;
+                }
+                if (ip > skill.level * 10) {
+                    skill.ip = ip - (skill.level * 10);
+                    skill.level += 1;
+                }
+            });
+        });
+        console.log({skillDoc: skills.doc, changed: changed});
+    };
 
     updateTalks = function () {
         Object.keys(talks).forEach(function (item) {
