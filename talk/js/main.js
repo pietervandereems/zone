@@ -149,7 +149,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
     });
 
     // Show/hide the IP inputs
-    elements.editIp.addEventListener('click', function () {
+    elements.editIp.addEventListener('click', function (ev) {
+    console.log('ev', ev, ev.target.innerHTML, ev.target.innerHTML === 'e');
         var inputs = document.querySelectorAll('#skills label');
         Object.keys(inputs).forEach(function (label) {
             if (inputs[label].style.visibility === 'hidden') {
