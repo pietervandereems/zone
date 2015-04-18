@@ -179,7 +179,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
             ev.target.parentElement.querySelector('ul').classList.toggle('off');
             break;
         case 'addSkill':
-            addSkill(ev.target);
+            addSkill(ev.target.parentElement);
             break;
         }
     });
@@ -240,7 +240,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
                         nwLevel += 1;
                     }
                 }
-                skills.doc.skill[stat].push({
+                skills.doc.skills[stat].push({
                     name: skillList[skillListItem].querySelector('input[name="name"]').value,
                     level: nwLevel,
                     ip: nwIp
