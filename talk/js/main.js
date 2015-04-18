@@ -208,7 +208,15 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
                 skill.level += 1;
             }
         });
-        console.log({skillDoc: skills.doc, changed: changed});
+        if (changed) {
+            db.put(skills.doc)
+                .then(function (result) {
+                    console.log('skills updated', result);
+                })
+                .catch(function (err) {
+                    console.error('Error saving skills', err);
+                });
+        }
     };
 
     updateTalks = function () {
