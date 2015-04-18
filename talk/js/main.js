@@ -150,14 +150,23 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
 
     // Show/hide the IP inputs
     elements.editIp.addEventListener('click', function (ev) {
-    console.log('ev', ev, ev.target.innerHTML, ev.target.innerHTML === 'e');
-        var inputs = document.querySelectorAll('#skills label');
+        var inputs = document.querySelectorAll('#skills label'),
+            visibility;
+        if (ev.target.innerHTML === 'e') {
+            // button displays edit so switch to "editmode"
+            visibility = 'visible';
+            // and switch icon
+            ev.target.innerHTML = 's';
+        } else {
+            // button displays save so switch to "normalmode"
+            visibility = 'hidden';
+            // and switch icon
+            ev.target.innerHTML = 'e';
+            // and make sure to save
+            // FIXME: save
+        }
         Object.keys(inputs).forEach(function (label) {
-            if (inputs[label].style.visibility === 'hidden') {
-                inputs[label].style.visibility = 'visible';
-            } else {
-                inputs[label].style.visibility = 'hidden';
-            }
+            inputs[label].style.visibility = visibility;
         });
     });
 
