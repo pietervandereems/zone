@@ -40,6 +40,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         elements.team = document.querySelector('[data-talk="team"]');
         elements.prive = document.querySelector('[data-talk="private"]');
         elements.user = document.querySelector('#topbar>select');
+        elements.editIp = document.querySelector('.skills [data-type="edit"]');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
@@ -145,6 +146,18 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         if (ev.target.dataset.type && ev.target.dataset.type === 'shrink') {
             ev.target.parentElement.querySelector('ul').classList.toggle('off');
         }
+    });
+
+    // Show/hide the IP inputs
+    elements.editIp.addEventListener('click', function () {
+        var inputs = document.querySelectorAll('#skills label');
+        Object.keys(inputs).forEach(function (label) {
+            if (inputs[label].style.visibility === 'hidden') {
+                inputs[label].style.visibility = 'visible';
+            } else {
+                inputs[label].style.visibility = 'hidden';
+            }
+        });
     });
 
     // **************************************************************************************************
