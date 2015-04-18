@@ -41,7 +41,7 @@ define([], function () {
                 var liSkill = document.createElement('li');
                 liSkill.setAttribute('data-skill', skill.name);
                 liSkill.innerHTML = skill.name + ': ' + skill.level + ' (' + (skill.level + doc.stats[stat])  + ')';
-                liSkill.innerHTML += ' <label>ip: <input type="number" value=' + skill.ip || 0  + ' min=0 max=100></input></label>';
+                liSkill.innerHTML += ' <label>ip: <input type="number" value=' + skill.ip  + ' min=0 max=100></input></label>';
                 ulSkill.appendChild(liSkill);
             });
             li.appendChild(ulSkill);

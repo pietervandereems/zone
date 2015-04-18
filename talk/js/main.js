@@ -176,9 +176,10 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
     // Database
     // **************************************************************************************************
 
+    // Find the skill in the document by name and it's stat parent
     findSkill = function (stat, skill) {
         var found;
-        skills.doc.skill[stat].forEach(function (docSkill) {
+        skills.doc.skills[stat].forEach(function (docSkill) {
             if (found) {
                 return;
             }
@@ -190,23 +191,22 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
     };
 
     saveIps = function () {
-        var statList = elements.skills.querySelector('ul').querySelectorAll('li'),
+        var skillList = elements.skills.querySelectorAll('ul>li>ul>li'),
             changed = false;
-        Object.keys(statList).forEach(function (statListItem) {
-            var statElm = statList[statListItem],
-                skillList = statElm.querySelector('ul').querySelectorAll('li');
-            Object.keys(skillList).forEach(function (skillListItem) {
-                var skill = findSkill(statElm.dataset.stat, skillList[skillListItem].dataset.skill),
-                    ip = skillList[skillListItem].querySelector('input').value;
-                if (skill.ip !== ip) {
-                    changed = true;
-                    skill.ip = ip;
-                }
-                if (ip > skill.level * 10) {
-                    skill.ip = ip - (skill.level * 10);
-                    skill.level += 1;
-                }
-            });
+        // Loop through all skill (li) items
+        Object.keys(skillList).forEach(function (skillListItem) {
+            // the name of the stat is set as data-stat on the li that contains the stat name in the html.
+            // the name of the skill is set as data-skill on the li that contains the skill in the html.
+            var skill = findSkill(skillList[skillListItem].parentElement.parentElement.dataset.stat, skillList[skillListItem].dataset.skill),
+                ip = skillList[skillListItem].querySelector('input').value;
+            if (skill.ip !== ip) {
+                changed = true;
+                skill.ip = ip;
+            }
+            if (ip > skill.level * 10) {
+                skill.ip = ip - (skill.level * 10);
+                skill.level += 1;
+            }
         });
         console.log({skillDoc: skills.doc, changed: changed});
     };
