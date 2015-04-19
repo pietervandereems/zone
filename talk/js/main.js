@@ -225,7 +225,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
             var stat = skillList[skillListItem].parentElement.parentElement.dataset.stat,
                 skillName = skillList[skillListItem].dataset.skill,
                 skill = findSkill(stat, skillName),
-                ip = skillList[skillListItem].querySelector('input').value,
+                ip = parseInt(skillList[skillListItem].querySelector('input').value, 10),
                 nwIp,
                 nwLevel;
             if (!skill) {
