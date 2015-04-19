@@ -53,7 +53,7 @@ define([], function () {
                 }
             }
             if (doc._id !== 'team') {
-                button = '<button type="button">s</button>';
+                button = '<button type="button">d</button>';
             }
             li.innerHTML = button + item.text;
             ul.appendChild(li);
