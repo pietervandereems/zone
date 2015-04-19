@@ -78,6 +78,11 @@ section[data-talk] li button {
     visibility: hidden;
 }
 
+/* start with add skill button as hidden */
+#skills button[data-type="addSkill"] {
+    visibility: hidden;
+}
+
 /*
 Copyright 2014 Pieter van der Eems
 This file is part of CreateNPC

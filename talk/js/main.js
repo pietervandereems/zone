@@ -184,9 +184,10 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         }
     });
 
-    // Show/hide+save the IP inputs
+    // Show/hide+save the IP inputs and add skill butons
     elements.editIp.addEventListener('click', function (ev) {
         var inputs = document.querySelectorAll('#skills label'),
+            buttons = document.querySelectorAll('#skills button[data-type="addSkill"]'),
             visibility;
         ev.preventDefault();
         if (ev.target.innerHTML === 'e') {
@@ -204,6 +205,9 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         }
         Object.keys(inputs).forEach(function (label) {
             inputs[label].style.visibility = visibility;
+        });
+        Object.keys(buttons).forEach(function (button) {
+            buttons[button].style.visibility = visibility;
         });
     });
 
