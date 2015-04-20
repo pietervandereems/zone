@@ -30,6 +30,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         processChanges,
         startReplicator,
         saveIps,
+        // Main functions
+        start,
         // Device functions
         setBatteryManagers;
 
@@ -147,6 +149,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
 
     // Change the talks when another user is selected.
     elements.user.addEventListener('change', function (ev) {
+        localStorage.userId = ev.target.value; // maybe upgrade to something better
         talks.user.id = ev.target.value;
         updateTalks();
     });
@@ -400,11 +403,20 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
     // **************************************************************************************************
     // Main
     // **************************************************************************************************
-    // Tell talk which document it is linked to
-    talks.user.id = '01f2fd12e76c1cd8f97fa093dd00dd2a';
-    talks.team.id = 'team';
-    // Start replication
-    startReplicator();
+    // Start it all up
+    start = function (id) {
+        // Tell talk which document it is linked to
+        if (id) {
+            talks.user.id = id;
+        } else {
+            talks.user.id = '01f2fd12e76c1cd8f97fa093dd00dd2a';
+        }
+        talks.team.id = 'team';
+        // Start replication
+        startReplicator();
+    };
+    // See if we have a previously selected user
+    start(localStorage.userId); // Maybe upgrade to something better then localStorage
 
     // **************************************************************************************************
     // Offline usage, this is last to ensure everything is defined first
