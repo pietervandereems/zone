@@ -104,7 +104,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         var li = document.createElement('li');
         li.setAttribute('data-skill', '');
         li.innerHTML = '<input type="text" name="name" placeholder="Ex: throwing"></input>';
-        li.innerHTML += '<label>ip: <input type="number" value=0 min=0 max=100 name="ip"></input></label>';
+        li.innerHTML += '<label style="visibility: visible;">ip: <input type="number" value=0 min=0 max=100 name="ip"></input></label>';
         elm.querySelector('ul').appendChild(li);
     };
 
@@ -204,10 +204,14 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
             saveIps();
         }
         Object.keys(inputs).forEach(function (label) {
-            inputs[label].style.visibility = visibility;
+            if (inputs[label].style) {
+                inputs[label].style.visibility = visibility;
+            }
         });
         Object.keys(buttons).forEach(function (button) {
-            buttons[button].style.visibility = visibility;
+            if (buttons[button].style) {
+                buttons[button].style.visibility = visibility;
+            }
         });
     });
 
@@ -227,7 +231,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
                 skill,
                 ip,
                 nwIp,
-                nwLevel;
+                nwLevel,
+                nwSkillName;
             if (!skillList[skillListItem].parentElement) { // Something to figure out, webkit/blink based browsers contain a last item in the list that has no parentElement.
                 return; // For now, just skip it.
             }
@@ -236,6 +241,10 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
             skill = findSkill(stat, skillName);
             ip = parseInt(skillList[skillListItem].querySelector('input').value, 10);
             if (!skill) {
+                nwSkillName = skillList[skillListItem].querySelector('input[name="name"]').value;
+                if (!nwSkillName) {  // only save skills that have a name
+                    return;
+                }
                 // A new skill was added
                 nwIp = parseInt(skillList[skillListItem].querySelector('input[name="ip"]').value, 10);
                 nwLevel = 0;
@@ -252,11 +261,12 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
                     }
                 }
                 skills.doc.skills[stat].push({
-                    name: skillList[skillListItem].querySelector('input[name="name"]').value,
+                    name: nwSkillName,
                     level: nwLevel,
                     ip: nwIp
                 });
                 changed = true;
+                return;
             }
             if (skill.ip !== ip) {
                 changed = true;
