@@ -222,12 +222,19 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         Object.keys(skillList).forEach(function (skillListItem) {
             // the name of the stat is set as data-stat on the li that contains the stat name in the html.
             // the name of the skill is set as data-skill on the li that contains the skill in the html.
-            var stat = skillList[skillListItem].parentElement.parentElement.dataset.stat,
-                skillName = skillList[skillListItem].dataset.skill,
-                skill = findSkill(stat, skillName),
-                ip = parseInt(skillList[skillListItem].querySelector('input').value, 10),
+            var stat,
+                skillName,
+                skill,
+                ip,
                 nwIp,
                 nwLevel;
+            if (!skillList[skillListItem].parentElement) { // Something to figure out, webkit/blink based browsers contain a last item in the list that has no parentElement.
+                return; // For now, just skip it.
+            }
+            stat = skillList[skillListItem].parentElement.parentElement.dataset.stat;
+            skillName = skillList[skillListItem].dataset.skill;
+            skill = findSkill(stat, skillName);
+            ip = parseInt(skillList[skillListItem].querySelector('input').value, 10);
             if (!skill) {
                 // A new skill was added
                 nwIp = parseInt(skillList[skillListItem].querySelector('input[name="ip"]').value, 10);
