@@ -1,8 +1,11 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
+requirejs(['pouchdb-3.4.0.min, team'], function (Pouchdb, Team) {
     'use strict';
     var db = new Pouchdb('mekton'),
+        talk = new Pouchdb('zone'),
+        remote = new Pouchdb('https://zone.mekton.nl/db/zone'),
+        team = new Team(talk, remote),
         npcMode = false,
         replicator,
         localCharacter = {},
@@ -46,6 +49,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     elements.saved = document.getElementById('saved');
     elements.save = document.getElementById('save');
     elements.generate = document.getElementById('generate');
+    elements.share = document.getElementById('share');
     elements.gear = document.getElementById('gear');
     elements.install = document.getElementById('install');
     elements.consol = document.getElementById('consol');
@@ -577,6 +581,11 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
         xhr.send();
     });
 
+    // Share a name with the team talk
+    elements.share.addEventListener('click', function () {
+        team.save('gm', elements.name.value);
+    });
+
     // **************************************************************************************************
     // Update
     // **************************************************************************************************
@@ -688,7 +697,8 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
     };
 
     startReplicator = function () {
-        replicator = db.replicate.from('https://zone.mekton.nl/db/zone', {
+        // characters
+        replicator = db.replicate.from(remote, {
             live: true,
             filter: 'mekton/typedDocs',
             retry: true
@@ -710,7 +720,7 @@ requirejs(['pouchdb-3.3.1.min'], function (Pouchdb) {
             .on('complete', function () { // will also be called on a replicator.cancel()
                 updateSelection();
             });
-        db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
+        db.replicate.to(remote, {live: true})
             .on('error', function (err) {
                 console.error('Error replicating to zone', err);
             });
