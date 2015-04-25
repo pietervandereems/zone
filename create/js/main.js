@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-3.4.0.min, team'], function (Pouchdb, Team) {
+requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
     'use strict';
     var db = new Pouchdb('mekton'),
         talk = new Pouchdb('zone'),
@@ -582,8 +582,9 @@ requirejs(['pouchdb-3.4.0.min, team'], function (Pouchdb, Team) {
     });
 
     // Share a name with the team talk
-    elements.share.addEventListener('click', function () {
-        team.save('gm', elements.name.value);
+    elements.share.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        team.save('gm', 'npc: ' + elements.name.value);
     });
 
     // **************************************************************************************************
