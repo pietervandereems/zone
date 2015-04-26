@@ -11,13 +11,14 @@ define([], function () {
     // **************************************************************************************************
     // Display the element, needed because we may need to wait until the dom is ready to display.
     display = function (elements) {
+        var self = this;
         if (!elements) {
             return;
         }
         if (this.elm) {
             this.elm.innerHTML = '';
             elements.forEach(function (element) {
-                this.elm.appendChild(element);
+                self.elm.appendChild(element);
             });
         } else {
             toBeDisplayed = elements;

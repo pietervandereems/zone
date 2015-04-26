@@ -130,6 +130,7 @@ section[data-talk] li button {
 }
 
 #skills ul {
+    margin-top: 0.5em;
     background-color: black;
     list-style: outside none none;
     border-width: 1px;
