@@ -76,7 +76,7 @@ requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
     };
 
     addSkillToStat = function (skill, stat) {
-        var skillValue = character.skills[stat][skill] || 0,
+        var skillValue = character.skills[stat][skill].level || 0,
             statValue = character.stats[stat] || 0;
         return parseInt(skillValue, 10) + parseInt(statValue, 10);
     };
@@ -408,7 +408,7 @@ requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
     // Skilllist needs to be retrieved asynchronously so a seperate function to display those.
     displaySkills = function () {
         var stats;
-        stats = Object.keys(character.skills);
+        stats = Object.keys(character.skills).sort();
         elements.skills.innerHTML = elmDefaults.skills;
         stats.forEach(function (stat) {
             var row = elements.skills.insertRow(),
@@ -417,7 +417,7 @@ requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
             rowInner += '<td>' + stat.capitalize() + '</td><td><ul>';
             skills = Object.keys(character.skills[stat]);
             skills.forEach(function (skill) {
-                rowInner += '<li data-value="' + addSkillToStat(skill, stat) + '">' + skill + ": " + character.skills[stat][skill] + '</li>';
+                rowInner += '<li data-value="' + addSkillToStat(skill, stat) + '">' + character.skills[stat][skill].name + ": " + character.skills[stat][skill].level + '</li>';
             });
             row.innerHTML = rowInner + '</ul></td>';
         });
