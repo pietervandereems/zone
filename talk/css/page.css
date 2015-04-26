@@ -12,10 +12,10 @@ body {
 }
 
 #topbar {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-around;
+    display             : flex;
+    flex-direction      : row;
+    flex-wrap           : nowrap;
+    justify-content     : space-around;
     background-color: black;
     padding: 0.5em;
     margin-left: -0.5em;
@@ -25,17 +25,29 @@ body {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     -webkit-transition: all 0.5s ease;
+
+    /* old browser support */
+    display                 : -webkit-flex;
+    -webkit-flex-direction  : row;
+    -webkit-flex-wrap       : nowrap;
+    -webkit-justify-content : space-around;
+
+    display                 : -ms-flexbox;
+    -ms-flex-direction      : row;
+    -ms-flex-wrap           : nowrap;
+    -ms-justify-content     : space-around;
+
 }
 
 /* both talks use flexbox */
 section[data-talk] {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: space-around;
+    display             : flex;
+    flex-direction      : column;
+    flex-wrap           : nowrap;
+    justify-content     : space-around;
 
-     /* old browser support */
-     /*    display                 : -webkit-flex;*/ /* don't know why but for this to work in IOS Safari, this needs to be commented out */
+    /* old browser support */
+    display                 : -webkit-flex;
     -webkit-flex-direction  : column;
     -webkit-flex-wrap       : nowrap;
     -webkit-justify-content : space-around;
@@ -49,9 +61,15 @@ section[data-talk] {
 /* put the talk input at the end */
 section[data-talk] ul {
     order: 0;
+    /* old browser support */
+    -ms-flex-order: 0;
+    -webkit-order: 0;
 }
 section[data-talk] input {
     order: 1;
+    /* old browser support */
+    -ms-flex-order: 1;
+    -webkit-order: 1;
 }
 
 /* Style the share button */
