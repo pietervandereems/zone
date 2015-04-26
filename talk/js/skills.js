@@ -15,6 +15,7 @@ define([], function () {
             return;
         }
         if (this.elm) {
+            element.className = this.elm.querySelector('ul').className;
             this.elm.replaceChild(element, this.elm.querySelector('ul'));
             this.elm.appendChild(element);
         } else {
