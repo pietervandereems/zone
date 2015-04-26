@@ -15,15 +15,20 @@ define([], function () {
             localDb.get('team')
                 .then(function (result) {
                     doc = result;
+                    console.log('retrieved', doc);
+                    queue.forEach(function (msg) {
+                        save(msg.author, msg.text, msg.timestamp);
+                    });
+                    queue = [];
                 }, function (err) {
                     console.error('Error retrieving team doc from local', err);
                 });
         }
     };
 
-    save = function (author, text) {
+    save = function (author, text, timestamp) {
         var msg = {
-                timestamp: new Date().toISOString(),
+                timestamp: timestamp || new Date().toISOString(),
                 author: author,
                 text: text
             };
@@ -32,7 +37,8 @@ define([], function () {
             queue.push(msg);
             return;
         }
-        doc.talks.push(msg);
+        console.log('saving', doc);
+        doc.talk.push(msg);
         localDb.put(doc)
             .catch(function (err) {
                 console.error('Error saving team doc locally', err);
@@ -45,7 +51,7 @@ define([], function () {
         // teamtalk
         local.replicate.from(remote, {
             live: true,
-            doc_ids: 'team',
+            doc_ids: ['team'],
             retry: true,
             include_docs: true
         })
@@ -59,14 +65,14 @@ define([], function () {
                 paused();
             })
             .on('change', function (changed) {
-                doc = changed;
+                doc = changed.docs[0];
             });
         local.replicate.to(remote, {live: true})
             .on('error', function (err) {
                 console.error('Error replicating team to zone', err);
             })
             .on('change', function (changed) {
-                doc = changed;
+                doc = changed.docs[0];
             });
     };
 
