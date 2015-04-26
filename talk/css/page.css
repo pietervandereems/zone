@@ -52,11 +52,13 @@ section {
     -webkit-flex-direction  : row;
     -webkit-flex-wrap       : wrap;
     -webkit-justify-content : space-between;
+    -webkit-align-items     : flex-start;
 
     display                 : -ms-flexbox;
     -ms-flex-direction      : row;
     -ms-flex-wrap           : wrap;
     -ms-justify-content     : space-between;
+    -ms-flex-align          : start;
 }
 
 /* talks have a different flex layout */
@@ -114,6 +116,7 @@ section[data-talk] li button {
     overflow: hidden;
 }
 
+/*** Skill styling ***/
 /* For skills, uppercase first letter */
 [data-stat] {
     text-transform: capitalize;
