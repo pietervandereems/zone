@@ -32,7 +32,7 @@ define([], function () {
             skills = this.doc.skills,
             doc = this.doc;
 
-        Object.keys(skills).forEach(function (stat) {
+        Object.keys(skills).sort().forEach(function (stat) {
             var li = document.createElement('li'),
                 ulSkill = document.createElement('ul');
             li.setAttribute('data-stat', stat);
