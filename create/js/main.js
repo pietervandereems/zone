@@ -199,7 +199,7 @@ requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
             var foundSkill;
             stat = stat.toLowerCase();
             value = parseInt(value, 10);
-            character.skills[stat] = character.skills[stat] || {};
+            character.skills[stat] = character.skills[stat] || [];
 
             foundSkill = findSkill(character.skills[stat], skill);
             if (unique && foundSkill) { // Skill must be unique
