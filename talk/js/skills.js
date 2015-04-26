@@ -10,16 +10,17 @@ define([], function () {
     // Internal
     // **************************************************************************************************
     // Display the element, needed because we may need to wait until the dom is ready to display.
-    display = function (element) {
-        if (!element) {
+    display = function (elements) {
+        if (!elements) {
             return;
         }
         if (this.elm) {
-            element.className = this.elm.querySelector('ul').className;
-            this.elm.replaceChild(element, this.elm.querySelector('ul'));
-            this.elm.appendChild(element);
+            this.elm.innerHTML = '';
+            elements.forEach(function (element) {
+                this.elm.appendChild(element);
+            });
         } else {
-            toBeDisplayed = element;
+            toBeDisplayed = elements;
         }
     };
 
@@ -28,12 +29,13 @@ define([], function () {
     // **************************************************************************************************
     // Show/update the talk inside the set element.
     showSkills = function () {
-        var ul = document.createElement('ul'),
+        var elements = [],
             skills = this.doc.skills,
             doc = this.doc;
 
         Object.keys(skills).sort().forEach(function (stat) {
-            var li = document.createElement('li'),
+            var ul = document.createElement('ul'),
+                li = document.createElement('li'),
                 ulSkill = document.createElement('ul');
             li.setAttribute('data-stat', stat);
             li.setAttribute('data-statvalue', doc.stats[stat]);
@@ -48,8 +50,9 @@ define([], function () {
             });
             li.appendChild(ulSkill);
             ul.appendChild(li);
+            elements.push(ul);
         });
-        display.call(this, ul);
+        display.call(this, elements);
     };
 
     return {

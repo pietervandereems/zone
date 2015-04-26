@@ -39,20 +39,37 @@ body {
 
 }
 
-/* both talks use flexbox */
-section[data-talk] {
+/* all sections use flexbox */
+section {
     display             : flex;
+    flex-direction      : row;
+    flex-wrap           : wrap;
+    justify-content     : space-between;
+    align-items         : flex-start;
+
+    /* old browser support */
+    display                 : -webkit-flex;
+    -webkit-flex-direction  : row;
+    -webkit-flex-wrap       : wrap;
+    -webkit-justify-content : space-between;
+
+    display                 : -ms-flexbox;
+    -ms-flex-direction      : row;
+    -ms-flex-wrap           : wrap;
+    -ms-justify-content     : space-between;
+}
+
+/* talks have a different flex layout */
+section[data-talk] {
     flex-direction      : column;
     flex-wrap           : nowrap;
     justify-content     : space-around;
 
     /* old browser support */
-    display                 : -webkit-flex;
     -webkit-flex-direction  : column;
     -webkit-flex-wrap       : nowrap;
     -webkit-justify-content : space-around;
 
-    display                 : -ms-flexbox;
     -ms-flex-direction      : column;
     -ms-flex-wrap           : nowrap;
     -ms-justify-content     : space-around;
@@ -110,6 +127,22 @@ section[data-talk] li button {
 /* start with add skill button as hidden */
 #skills button[data-type="addSkill"] {
     visibility: hidden;
+}
+
+#skills ul {
+    background-color: black;
+    list-style: outside none none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin-right: 5px;
+}
+
+#skills ul ul {
+    list-style: outside none disc;
+    padding-left: 25px;
+    border-style: none;
 }
 
 /*

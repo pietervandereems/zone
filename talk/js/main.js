@@ -179,7 +179,11 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
         }
         switch (ev.target.dataset.type) {
         case 'shrink':
-            ev.target.parentElement.querySelector('ul').classList.toggle('off');
+            if (ev.target.dataset.section) {
+                document.getElementById(ev.target.dataset.section).classList.toggle('off');
+            } else {
+                ev.target.parentElement.querySelector('ul').classList.toggle('off');
+            }
             break;
         case 'addSkill':
             addSkill(ev.target.parentElement);
