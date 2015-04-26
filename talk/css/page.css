@@ -33,6 +33,17 @@ section[data-talk] {
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: space-around;
+
+     /* old browser support */
+     /*    display                 : -webkit-flex;*/ /* don't know why but for this to work in IOS Safari, this needs to be commented out */
+    -webkit-flex-direction  : column;
+    -webkit-flex-wrap       : nowrap;
+    -webkit-justify-content : space-around;
+
+    display                 : -ms-flexbox;
+    -ms-flex-direction      : column;
+    -ms-flex-wrap           : nowrap;
+    -ms-justify-content     : space-around;
 }
 
 /* put the talk input at the end */
