@@ -248,6 +248,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
             skill = findSkill(stat, skillName);
             ip = parseInt(skillList[skillListItem].querySelector('input').value, 10);
             if (!skill) {
+                // a new skill added
                 nwSkillName = skillList[skillListItem].querySelector('input[name="name"]').value;
                 if (!nwSkillName) {  // only save skills that have a name
                     return;
@@ -279,7 +280,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
                 changed = true;
                 skill.ip = ip;
             }
-            if (ip > skill.level * 10) {
+            if (ip >= skill.level * 10) {
                 skill.ip = ip - (skill.level * 10);
                 skill.level += 1;
             }
