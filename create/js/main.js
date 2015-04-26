@@ -180,20 +180,40 @@ requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
     };
     generateSkills = function (doc) {
         var addToSkillList,
+            findSkill,
             findStatOfSkill;
         if (!Array.isArray(doc.starting_skills)) {
             return;
         }
+        findSkill = function (stat, skill) {
+            var i;
+            for (i = stat.length - 1; i >= 0; i -= 1) {
+                if (stat[i].name === skill) {
+                    return (stat[i]);
+                }
+            }
+            return false;
+        };
         // Add the skill to the internal skilllist.
         addToSkillList = function (skill, value, stat, unique) {
+            var foundSkill;
             stat = stat.toLowerCase();
             value = parseInt(value, 10);
             character.skills[stat] = character.skills[stat] || {};
-            if (unique && character.skills[stat][skill]) { // Skill must be unique
+
+            foundSkill = findSkill(character.skills[stat], skill);
+            if (unique && foundSkill) { // Skill must be unique
                 return false;
             }
-            character.skills[stat][skill] = character.skills[stat][skill] || 0;
-            character.skills[stat][skill] += value;
+            if (foundSkill) {
+                foundSkill.level += value;
+            } else {
+                character.skills[stat].push({
+                    name: skill,
+                    level: value,
+                    ip: 0
+                });
+            }
             return true;
         };
         // Determine the stat the skill belongs to
