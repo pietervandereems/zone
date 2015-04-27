@@ -40,7 +40,7 @@ define([], function () {
                 ulSkill = document.createElement('ul');
             li.setAttribute('data-stat', stat);
             li.setAttribute('data-statvalue', doc.stats[stat]);
-            li.innerHTML = stat + '<span<(' + doc.stats[stat] + ')</span>';
+            li.innerHTML = stat + ' <span>(' + doc.stats[stat] + ')</span>';
             li.innerHTML += ' <button data-type="addSkill">+</button>';
             skills[stat].forEach(function (skill) {
                 var liSkill = document.createElement('li');
