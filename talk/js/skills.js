@@ -40,12 +40,12 @@ define([], function () {
                 ulSkill = document.createElement('ul');
             li.setAttribute('data-stat', stat);
             li.setAttribute('data-statvalue', doc.stats[stat]);
-            li.innerHTML = stat;
+            li.innerHTML = stat + '<span<(' + doc.stats[stat] + ')</span>';
             li.innerHTML += ' <button data-type="addSkill">+</button>';
             skills[stat].forEach(function (skill) {
                 var liSkill = document.createElement('li');
                 liSkill.setAttribute('data-skill', skill.name);
-                liSkill.innerHTML = skill.name + ': ' + skill.level + ' (' + (skill.level + doc.stats[stat])  + ')';
+                liSkill.innerHTML = skill.name + ': ' + skill.level + ' <span>(' + (skill.level + doc.stats[stat])  + ')</span>';
                 liSkill.innerHTML += ' <label>ip: <input type="number" value=' + skill.ip  + ' min=0 max=100></input></label>';
                 ulSkill.appendChild(liSkill);
             });

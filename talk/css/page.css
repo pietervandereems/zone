@@ -117,9 +117,18 @@ section[data-talk] li button {
 }
 
 /*** Skill styling ***/
-/* For skills, uppercase first letter */
+/* For skills/stats */
 [data-stat] {
     text-transform: capitalize;
+    color: burlywood;
+}
+
+[data-stat] li {
+    color: silver;
+}
+
+[data-stat] span {
+    font-size: smaller;
 }
 
 /* start with ip input as hidden */
@@ -134,11 +143,12 @@ section[data-talk] li button {
 
 #skills ul {
     margin-top: 0.5em;
-    background-color: black;
+    background-color: #161616;
     list-style: outside none none;
     border-width: 1px;
     border-style: solid;
     border-radius: 5px;
+    border-color: #565656;
     padding: 5px;
     margin-right: 5px;
 }
