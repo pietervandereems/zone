@@ -40,12 +40,12 @@ define([], function () {
                 ulGear = document.createElement('ul');
             li.setAttribute('data-gearCat', cat);
             li.innerHTML = cat;
-            li.innerHTML += ' <button data-type="addGear">+</button>';
+//            li.innerHTML += ' <button data-type="addGear">+</button>';
             gear[cat].forEach(function (item) {
                 var liItem = document.createElement('li');
                 liItem.setAttribute('data-gearItem', item.gear);
                 liItem.innerHTML = item.gear + ': ' + item.value;
-                liItem.innerHTML += ' <label>value: <input type="text" value="' + item.value  + '"></input></label>';
+                //liItem.innerHTML += ' <label>value: <input type="text" value="' + item.value  + '"></input></label>';
                 ulGear.appendChild(liItem);
             });
             li.appendChild(ulGear);

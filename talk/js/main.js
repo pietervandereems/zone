@@ -43,7 +43,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
     setElements = function () {
         elements.consol = document.getElementById('consol');
         elements.skills = document.getElementById('skills');
-        elements.skills = document.getElementById('gear');
+        elements.gear = document.getElementById('gear');
         elements.team = document.querySelector('[data-talk="team"]');
         elements.prive = document.querySelector('[data-talk="private"]');
         elements.user = document.querySelector('#topbar>select');
