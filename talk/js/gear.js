@@ -44,7 +44,10 @@ define([], function () {
             gear[cat].forEach(function (item) {
                 var liItem = document.createElement('li');
                 liItem.setAttribute('data-gearItem', item.gear);
-                liItem.innerHTML = item.gear + ': ' + item.value;
+                liItem.innerHTML = item.gear;
+                if (item.value) {
+                    liItem.innerHTML += ': ' + item.value;
+                }
                 //liItem.innerHTML += ' <label>value: <input type="text" value="' + item.value  + '"></input></label>';
                 ulGear.appendChild(liItem);
             });
