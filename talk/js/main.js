@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Skills) {
+requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, Talk, Skills, Gear) {
     'use strict';
     var // Internal variables
         db = new Pouchdb('zone'),
@@ -15,6 +15,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
             team: Object.create(Talk)
         },
         skills = Object.create(Skills),
+        gear = Object.create(Gear),
         // Interface elements
         setElements,
         // Helper functions
@@ -308,6 +309,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
                             if (talks[item].doc._id !== 'team') {
                                 skills.doc = doc;
                                 skills.show();
+                                gear.doc = doc;
+                                gear.show();
                             }
                             talks[item].show();
                         }
@@ -362,8 +365,10 @@ requirejs(['pouchdb-master.min', 'talk', 'skills'], function (Pouchdb, Talk, Ski
                 if (doc._id === talks.user.id) {
                     talks.user.doc = doc;
                     skills.doc = doc;
+                    gear.doc = doc;
                     talks.user.show();
                     skills.show();
+                    gear.show();
                 }
                 if (doc._id === 'team') {
                     talks.team.doc = doc;
