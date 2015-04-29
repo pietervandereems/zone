@@ -125,14 +125,14 @@ section[data-talk] li button {
     overflow: hidden;
 }
 
-/*** Skill styling ***/
-/* For skills/stats */
-[data-stat] {
+/*** Skill/gear styling ***/
+/* For skills/stats/gear */
+.blocked>ul>li {
     text-transform: capitalize;
     color: burlywood;
 }
 
-[data-stat] li {
+.blocked li {
     color: silver;
 }
 
@@ -140,17 +140,8 @@ section[data-talk] li button {
     font-size: smaller;
 }
 
-/* start with ip input as hidden */
-#skills label {
-    visibility: hidden;
-}
 
-/* start with add skill button as hidden */
-#skills button[data-type="addSkill"] {
-    visibility: hidden;
-}
-
-#skills ul {
+.blocked ul {
     margin-top: 0.5em;
     background-color: #161616;
     list-style: outside none none;
@@ -162,10 +153,20 @@ section[data-talk] li button {
     margin-right: 5px;
 }
 
-#skills ul ul {
+.blocked ul ul {
     list-style: outside none disc;
     padding-left: 25px;
     border-style: none;
+}
+
+/* start with ip input as hidden */
+#skills label {
+    visibility: hidden;
+}
+
+/* start with add skill button as hidden */
+#skills button[data-type="addSkill"] {
+    visibility: hidden;
 }
 
 /*
