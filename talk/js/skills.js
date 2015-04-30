@@ -32,7 +32,18 @@ define([], function () {
     showSkills = function () {
         var elements = [],
             skills = this.doc.skills,
-            doc = this.doc;
+            doc = this.doc,
+            order;
+
+        order = function (a, b) {
+            if (a < b) {
+                return -1;
+            }
+            if (a > b) {
+                return 1;
+            }
+            return 0;
+        };
 
         Object.keys(skills).sort().forEach(function (stat) {
             var ul = document.createElement('ul'),
@@ -42,7 +53,7 @@ define([], function () {
             li.setAttribute('data-statvalue', doc.stats[stat]);
             li.innerHTML = stat + ' <span>(' + doc.stats[stat] + ')</span>';
             li.innerHTML += ' <button data-type="addSkill">+</button>';
-            skills[stat].forEach(function (skill) {
+            skills[stat].sort(order).forEach(function (skill) {
                 var liSkill = document.createElement('li');
                 liSkill.setAttribute('data-skill', skill.name);
                 liSkill.innerHTML = skill.name + ': ' + skill.level + ' <span>(' + (skill.level + doc.stats[stat])  + ')</span>';
