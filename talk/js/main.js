@@ -31,6 +31,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
         processChanges,
         startReplicator,
         saveIps,
+        tryAgain,
+        tryAgainTalk,
         // Main functions
         start,
         // Device functions
@@ -118,7 +120,8 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
     // **************************************************************************************************
     // Save text when enter has been pressed
     addOnEnter = function (ev) {
-        var doc;
+        var doc,
+            msg;
         if ((ev.key && ev.key === 'Enter') ||
                 (ev.keyIndentifier && ev.keyIdentifier === 'Enter') ||
                 (ev.keyCode && ev.keyCode === 13)
@@ -131,17 +134,19 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
                 doc = talks.team.doc;
                 break;
             }
-            doc.talk.push({
+            msg = {
                 timestamp: new Date().toISOString(),
                 text: ev.target.value,
                 author: talks.user.id
-            });
+            };
+            doc.talk.push(msg);
             db.put(doc)
                 .then(function () {
                     ev.target.value = '';
                 })
                 .catch(function (err) {
                     console.error('Error saving doc', err);
+                    tryAgainTalk(db, doc, msg);
                 });
         }
     };
@@ -160,17 +165,20 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
     // React to clicks with the private talk (to copy private message to team talk)
     elements.prive.querySelector('ul').addEventListener('click', function (ev) {
         var teamTalk = talks.team.doc.talk,
-            msgElm = ev.target.parentElement;
+            msgElm = ev.target.parentElement,
+            msg;
         ev.preventDefault();
         if (ev.target.nodeName.toLowerCase() === 'button') {
-            teamTalk.push({
+            msg = {
                 timestamp: msgElm.dataset.time,
                 author: msgElm.dataset.author,
                 text: msgElm.dataset.text
-            });
+            };
+            teamTalk.push(msg);
             db.put(talks.team.doc)
                 .catch(function (err) {
                     console.error('Error saving team doc', err);
+                    tryAgainTalk(db, talks.team.doc, msg);
                 });
         }
     });
@@ -228,6 +236,34 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
     // **************************************************************************************************
     // Database
     // **************************************************************************************************
+
+    tryAgain = function (db, doc) {
+        db.get(doc._id)
+            .then(function (nwDoc) {
+                doc._rev = nwDoc._rev;
+                db.put(doc)
+                    .then(function () {}, function (err) {
+                        console.error('Error in try again, in put after get', {db: db, doc: doc, error: err});
+                    });
+            }, function (err) {
+                console.error('Error in trying again in get', {db: db, doc: doc, error: err});
+            });
+    };
+
+    tryAgainTalk = function (db, doc, msg) {
+        db.get(doc._id)
+            .then(function (nwDoc) {
+                nwDoc.talk.push(msg);
+                doc = nwDoc;
+                db.put(doc)
+                    .then(function () {}, function (err) {
+                        console.error('Error in try again Talk, in put after get', {db: db, doc: doc, error: err});
+                    });
+            }, function (err) {
+                console.error('Error in trying again Talk in get', {db: db, doc: doc, error: err});
+            });
+    };
+
 
     saveIps = function () {
         var skillList = elements.skills.querySelectorAll('ul>li>ul>li'),
@@ -295,6 +331,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
                 })
                 .catch(function (err) {
                     console.error('Error saving skills', err);
+                    tryAgain(db, skills.doc);
                 });
         }
     };
