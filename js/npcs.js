@@ -29,9 +29,9 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
                 li = document.createElement('li');
                 div = document.createElement('div');
                 skills.element = div;
+                skills.doc = item.doc;
                 skills.show();
 
-                skills.doc = item.doc;
                 li.innerHTML = '<button type="button" class="off" data-id="' + item.doc.id + '">' + item.doc.name + '</button>';
                 li.appendChild(div);
                 ul.appendChild(li);
@@ -56,17 +56,8 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
         .on('error', function (err) {
             console.error('Error replicating from zone', err);
         })
-        .on('paused', function (err) {
-            if (err) {
-                console.error('Error replicating from zone (paused)', err);
-            }
-            updateNpcs();
-        })
-        .on('change', function () {
-            updateNpcs();
-        })
         .on('complete', function () { // will also be called on a replicator.cancel()
-            console.log('complete');
+            updateNpcs();
         });
 
 });
