@@ -21,18 +21,23 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
             docs.rows.forEach(function (item) {
                 var skills,
                     li,
-                    div;
+                    div,
+                    info = '';
                 if (item.doc.type !== 'npc') {
                     return;
                 }
                 skills = Object.create(Skills);
                 li = document.createElement('li');
                 div = document.createElement('div');
+                div.classList.add('off');
                 skills.element = div;
                 skills.doc = item.doc;
                 skills.show();
 
-                li.innerHTML = '<button type="button" class="off" data-id="' + item.doc.id + '">' + item.doc.name + '</button>';
+                if (item.doc.gm) {
+                    info = item.doc.gm.info || '';
+                }
+                li.innerHTML = item.doc.name + '(' + info +  ') <button type="button" "data-id="' + item.doc._id + '">&gt</button>';
                 li.appendChild(div);
                 ul.appendChild(li);
             });
