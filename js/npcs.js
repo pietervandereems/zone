@@ -20,17 +20,20 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
         addNpcs = function (docs) {
             docs.rows.forEach(function (item) {
                 var skills,
-                    li;
+                    li,
+                    div;
                 if (item.doc.type !== 'npc') {
                     return;
                 }
                 skills = Object.create(Skills);
                 li = document.createElement('li');
+                div = document.createElement('div');
+                skills.element = div;
+                skills.show();
 
                 skills.doc = item.doc;
                 li.innerHTML = '<button type="button" class="off" data-id="' + item.doc.id + '">' + item.doc.name + '</button>';
-                skills.element = li;
-                skills.show();
+                li.appendChild(div);
                 ul.appendChild(li);
             });
         };
