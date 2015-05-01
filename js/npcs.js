@@ -4,22 +4,49 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
     'use strict';
     var db = new Pouchdb('zone'),
         remote = new Pouchdb('https://zone.mekton.nl/db/zone'),
+        body = document.querySelector('body'),
         updateNpcs;
 
+    body.addEventListener('click', function (ev) {
+        if (ev.target.nodeName.toLowerCase() === 'button') {
+            ev.target.nextSibling.classList.toggle('off');
+        }
+    });
+
     updateNpcs = function () {
-        var ul = document.createElement('ul');
+        var ul = document.createElement('ul'),
+            addNpcs;
+
+        addNpcs = function (docs) {
+            docs.rows.forEach(function (item) {
+                var skills,
+                    li;
+                if (item.doc.type !== 'npc') {
+                    return;
+                }
+                skills = Object.create(Skills);
+                li = document.createElement('li');
+
+                skills.doc = item.doc;
+                li.innerHTML = '<button type="button" class="off" data-id="' + item.doc.id + '">' + item.doc.name + '</button>';
+                skills.element = li;
+                skills.show();
+                ul.appendChild(li);
+            });
+        };
+
         db.allDocs({include_docs: true})
-            .then(function (docs) {
-                console.log(docs);
-            }, function (err) {
+            .then(addNpcs, function (err) {
                 console.error('Error retrieving all docs', err);
             });
-        document.querySelector('body').appendChild(ul);
+
+        body.innerHTML = '';
+        body.appendChild(ul);
     };
 
     remote.replicate.to(db, {
         live: false,
-        filter: 'filters/npcs',
+        filter: 'zone/npcs',
         retry: true,
         include_docs: false
     })
