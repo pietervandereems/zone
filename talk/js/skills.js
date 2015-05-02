@@ -32,6 +32,7 @@ define([], function () {
     showSkills = function () {
         var elements = [],
             skills = this.doc.skills,
+            stats = this.doc.stats,
             doc = this.doc,
             order;
 
@@ -45,7 +46,7 @@ define([], function () {
             return 0;
         };
 
-        Object.keys(skills).sort().forEach(function (stat) {
+        Object.keys(stats).sort().forEach(function (stat) {
             var ul = document.createElement('ul'),
                 li = document.createElement('li'),
                 ulSkill = document.createElement('ul');
@@ -53,13 +54,15 @@ define([], function () {
             li.setAttribute('data-statvalue', doc.stats[stat]);
             li.innerHTML = stat + ' <span>(' + doc.stats[stat] + ')</span>';
             li.innerHTML += ' <button data-type="addSkill">+</button>';
-            skills[stat].sort(order).forEach(function (skill) {
-                var liSkill = document.createElement('li');
-                liSkill.setAttribute('data-skill', skill.name);
-                liSkill.innerHTML = skill.name + ': ' + skill.level + ' <span>(' + (skill.level + doc.stats[stat])  + ')</span>';
-                liSkill.innerHTML += ' <label>ip: <input type="number" value=' + skill.ip  + ' min=0 max=100></input></label>';
-                ulSkill.appendChild(liSkill);
-            });
+            if (skills[stat]) {
+                skills[stat].sort(order).forEach(function (skill) {
+                    var liSkill = document.createElement('li');
+                    liSkill.setAttribute('data-skill', skill.name);
+                    liSkill.innerHTML = skill.name + ': ' + skill.level + ' <span>(' + (skill.level + doc.stats[stat])  + ')</span>';
+                    liSkill.innerHTML += ' <label>ip: <input type="number" value=' + skill.ip  + ' min=0 max=100></input></label>';
+                    ulSkill.appendChild(liSkill);
+                });
+            }
             li.appendChild(ulSkill);
             ul.appendChild(li);
             elements.push(ul);
