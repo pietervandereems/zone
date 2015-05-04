@@ -339,6 +339,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
     updateTalks = function () {
         Object.keys(talks).forEach(function (item) {
             if (!talks[item].doc || !talks[item].doc._id || (talks[item].doc._id !== talks.user.id || talks[item].doc._id !== 'team')) { // no need to get doc if already available
+console.log('updateTalks, in if', {item: item});
                 db.get(talks[item].id)
                     .then(function (doc) {
                         if (!talks[item].doc || !talks[item].doc._rev ||
@@ -347,6 +348,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
                             talks[item].doc = doc;
                             if (talks[item].doc._id !== 'team') {
                                 skills.doc = doc;
+console.log('updateTalks, skills.show');
                                 skills.show();
                                 gear.doc = doc;
                                 gear.show();
@@ -399,6 +401,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
     };
 
     processChanges = function (changed) {
+console.log('change', changed);
         if (Array.isArray(changed.docs)) {
             changed.docs.forEach(function (doc) {
                 if (doc._id === talks.user.id) {
@@ -406,6 +409,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
                     skills.doc = doc;
                     gear.doc = doc;
                     talks.user.show();
+console.log('show skills processChanges, show', doc._id, talks.user.id);
                     skills.show();
                     gear.show();
                 }
@@ -432,7 +436,6 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
                     console.error('Error replicating from zone (paused)', err);
                 }
                 updateTalks();
-                updateUsers();
             })
             .on('change', function (changed) {
                 processChanges(changed);
@@ -463,6 +466,7 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
         talks.team.id = 'team';
         // Start replication
         startReplicator();
+        updateUsers();
     };
     // See if we have a previously selected user
     start(localStorage.userId); // Maybe upgrade to something better then localStorage
