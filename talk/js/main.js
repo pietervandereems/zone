@@ -325,9 +325,6 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
         });
         if (changed) {
             db.put(skills.doc)
-                .then(function (result) {
-                    console.log('skills updated', result);
-                })
                 .catch(function (err) {
                     console.error('Error saving skills', err);
                     tryAgain(db, skills.doc);
@@ -447,9 +444,6 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
             })
             .on('change', function (changed) {
                 processChanges(changed);
-            })
-            .on('complete', function () { // will also be called on a replicator.cancel()
-                console.log('complete');
             });
         db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
             .on('error', function (err) {
