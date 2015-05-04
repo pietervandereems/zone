@@ -20,7 +20,6 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
         setElements,
         // Helper functions
         setMsg,
-        revSeq,
         findSkill,
         addSkill,
         // Event functions
@@ -86,9 +85,9 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
         }, 5000);
     };
 
-    revSeq = function (rev) {
-        return parseInt(rev.substr(0, rev.indexOf('-')), 10);
-    };
+//    revSeq = function (rev) {
+//        return parseInt(rev.substr(0, rev.indexOf('-')), 10);
+//    };
 
     // Find the skill in the document by name and it's stat parent
     findSkill = function (stat, skill) {
@@ -337,30 +336,41 @@ requirejs(['pouchdb-master.min', 'talk', 'skills', 'gear'], function (Pouchdb, T
     };
 
     updateTalks = function () {
-        Object.keys(talks).forEach(function (item) {
-            if (!talks[item].doc || !talks[item].doc._id || (talks[item].doc._id !== talks.user.id || talks[item].doc._id !== 'team')) { // no need to get doc if already available
-console.log('updateTalks, in if', {item: item});
-                db.get(talks[item].id)
-                    .then(function (doc) {
-                        if (!talks[item].doc || !talks[item].doc._rev ||
-                                !(revSeq(talks[item].doc._rev) < revSeq(doc._rev)) ||
-                                (talks[item].doc._id !== talks.user.id || talks[item].doc._id !== 'team')) { // in the mean time we might have already gotten a newer of the same document, in that case, only update if we got something newer
-                            talks[item].doc = doc;
-                            if (talks[item].doc._id !== 'team') {
-                                skills.doc = doc;
-console.log('updateTalks, skills.show');
-                                skills.show();
-                                gear.doc = doc;
-                                gear.show();
-                            }
-                            talks[item].show();
-                        }
-                    })
-                    .catch(function (err) {
-                        console.error('Error getting', item, 'with id', talks[item].id, ', err', err);
-                    });
-            }
-        });
+        var update,
+            preRev = {
+                user: 0,
+                team: 0
+            };
+        if (talks.user.doc) {
+            preRev.user = talks.user.doc._rev || 0;
+        }
+        if (talks.team.doc) {
+            preRev.team = talks.team.doc._rev || 0;
+        }
+        update = function (type) {
+            return function (doc) {
+                talks[type].doc = doc;
+                if (type !== 'team') {
+                    if (doc._rev !== preRev[type]) {
+                        skills.doc = doc;
+                        gear.doc = doc;
+                        skills.show();
+                        gear.show();
+                    }
+                }
+                if (doc._rev !== preRev[type]) {
+                    talks[type].show();
+                }
+            };
+        };
+        db.get('team')
+            .then(update('team'), function (err) {
+                console.error('Error getting team', 'err:', err);
+            });
+        db.get(talks.user.id)
+            .then(update('user'), function (err) {
+                console.error('Error getting user', {userid: talks.user.id, err: err}); // be carefull talks.user.id here can be changed from the one 2 lines above (db.get), async for the win :-)
+            });
     };
 
     updateUsers = function () {
@@ -401,7 +411,6 @@ console.log('updateTalks, skills.show');
     };
 
     processChanges = function (changed) {
-console.log('change', changed);
         if (Array.isArray(changed.docs)) {
             changed.docs.forEach(function (doc) {
                 if (doc._id === talks.user.id) {
@@ -409,7 +418,6 @@ console.log('change', changed);
                     skills.doc = doc;
                     gear.doc = doc;
                     talks.user.show();
-console.log('show skills processChanges, show', doc._id, talks.user.id);
                     skills.show();
                     gear.show();
                 }
