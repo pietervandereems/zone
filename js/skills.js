@@ -34,7 +34,8 @@ define([], function () {
             skills = this.doc.skills,
             stats = this.doc.stats,
             doc = this.doc,
-            order;
+            order,
+            liHistory;
 
         order = function (a, b) {
             if (a.name < b.name) {
@@ -46,6 +47,11 @@ define([], function () {
             return 0;
         };
 
+        if (doc.gm && doc.gm.history) {
+            liHistory = document.createElement('li');
+            liHistory.innerHTML = doc.gm.history;
+            elements.push(document.createElement('ul').appendChild(liHistory));
+        }
         Object.keys(stats).sort().forEach(function (stat) {
             var ul = document.createElement('ul'),
                 li = document.createElement('li'),
