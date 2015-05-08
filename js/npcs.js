@@ -15,10 +15,21 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
 
     updateNpcs = function () {
         var ul = document.createElement('ul'),
-            addNpcs;
+            addNpcs,
+            orderNpcs;
+
+        orderNpcs = function (a, b) {
+            if (a.doc.name < b.doc.name) {
+                return -1;
+            }
+            if (a.doc.name > b.doc.name) {
+                return 1;
+            }
+            return 0;
+        };
 
         addNpcs = function (docs) {
-            docs.rows.forEach(function (item) {
+            docs.rows.sort(orderNpcs).forEach(function (item) {
                 var skills,
                     li,
                     div,
