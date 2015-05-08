@@ -19,10 +19,13 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
             orderNpcs;
 
         orderNpcs = function (a, b) {
-            if (a.doc.name < b.doc.name) {
+            if (!a.doc.name || !b.doc.name) {
+                return 0;
+            }
+            if (a.doc.name.toLowerCase() < b.doc.name.toLowerCase()) {
                 return -1;
             }
-            if (a.doc.name > b.doc.name) {
+            if (a.doc.name.toLowerCase() > b.doc.name.toLowerCase()) {
                 return 1;
             }
             return 0;
