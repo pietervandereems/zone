@@ -1,0 +1,65 @@
+@charset "utf-8";
+/* Some default settings */
+* + * {
+    margin-top: 0.5em;
+}
+
+li {
+    margin: 0;
+}
+
+body {
+    background-image: url("../img/bg20.gif");
+    background-color: black;
+    color: silver;
+    margin: 0.5em;
+    margin-top: 0;
+    font-family: "sans-serif";
+}
+
+input[type=number] {
+    width: 3em;
+}
+
+#topbar {
+    display             : flex;
+    flex-direction      : row;
+    flex-wrap           : nowrap;
+    justify-content     : space-around;
+    background-color: black;
+    padding: 0.5em;
+    margin-left: -0.5em;
+    margin-right: -0.5em;
+    transition: all 0.5s ease;
+
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -webkit-transition: all 0.5s ease;
+
+    /* old browser support */
+    display                 : -webkit-flex;
+    -webkit-flex-direction  : row;
+    -webkit-flex-wrap       : nowrap;
+    -webkit-justify-content : space-around;
+
+    display                 : -ms-flexbox;
+    -ms-flex-direction      : row;
+    -ms-flex-wrap           : nowrap;
+    -ms-justify-content     : space-around;
+
+}
+
+/*
+Copyright 2015 Pieter van der Eems
+This file is part of Zone
+Zone is free software: you can redistribute it and/or modify
+it under the terms of the Affero GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+Zone is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+Affero GNU General Public License for more details.
+You should have received a copy of the Affero GNU General Public License
+along with Zone. If not, see <http://www.gnu.org/licenses/>.
+*/
