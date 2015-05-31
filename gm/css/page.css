@@ -8,6 +8,14 @@ li {
     margin: 0;
 }
 
+a {
+    color: silver;
+}
+
+a:visited {
+    color: white;
+}
+
 body {
     background-image: url("../img/bg20.gif");
     background-color: black;
