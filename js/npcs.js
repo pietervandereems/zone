@@ -67,7 +67,7 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
     };
 
     remote.replicate.to(db, {
-        live: false,
+        live: true,
         filter: 'zone/npcs',
         retry: true,
         include_docs: false
@@ -75,8 +75,23 @@ define(['pouchdb-3.4.0.min', 'skills'], function (Pouchdb, Skills) {
         .on('error', function (err) {
             console.error('Error replicating from zone', err);
         })
-        .on('complete', function () { // will also be called on a replicator.cancel()
+        .on('paused', function () {
+            updateNpcs();
+        })
+        .on('complete', function () { // will be called when the replication is cancelled
             updateNpcs();
         });
 
 });
+//Copyright 2015 Pieter van der Eems
+//This file is part of Zone
+//Zone is free software: you can redistribute it and/or modify
+//it under the terms of the Affero GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//(at your option) any later version.
+//Zone is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//Affero GNU General Public License for more details.
+//You should have received a copy of the Affero GNU General Public License
+//along with Zone. If not, see <http://www.gnu.org/licenses/>.
