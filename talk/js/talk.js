@@ -4,7 +4,8 @@ define([], function () {
     'use strict';
     var toBeDisplayed,
         showTalk,
-        display;
+        display,
+        weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'];
 
     // **************************************************************************************************
     // Internal
@@ -39,7 +40,8 @@ define([], function () {
         talk.forEach(function (item) {
             var li = document.createElement('li'),
                 color,
-                button = '';
+                button = '',
+                date;
             li.setAttribute('data-time', item.timestamp);
             li.setAttribute('data-text', item.text);
             if (item.author) { // every author in a different color
@@ -55,7 +57,8 @@ define([], function () {
             if (doc._id !== 'team') {
                 button = '<button type="button">d</button>';
             }
-            li.innerHTML = button + item.text;
+            date = new Date(item.timestamp);
+            li.innerHTML = button + '(' + weekday(date.getDay()) + ' ' + date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + ')' + item.text;
             ul.appendChild(li);
         });
         display.call(this, ul);
