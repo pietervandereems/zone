@@ -170,6 +170,11 @@ section[data-talk] li button {
     visibility: hidden;
 }
 
+/* show spans as small text*/
+span {
+    font-size: small;
+}
+
 /*
 Copyright 2014 Pieter van der Eems
 This file is part of CreateNPC

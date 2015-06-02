@@ -58,7 +58,7 @@ define([], function () {
                 button = '<button type="button">d</button>';
             }
             date = new Date(item.timestamp);
-            li.innerHTML = button + '(' + weekday(date.getDay()) + ' ' + date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + ')' + item.text;
+            li.innerHTML = button + '<span>(' + weekday[date.getDay()] + ' ' + date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + ')</span> ' + item.text;
             ul.appendChild(li);
         });
         display.call(this, ul);
