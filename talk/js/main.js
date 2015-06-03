@@ -32,6 +32,8 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         saveIps,
         tryAgain,
         tryAgainTalk,
+        updateCampaign,
+        campaignChanged,
         // Main functions
         start,
         // Device functions
@@ -48,6 +50,7 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         elements.team = document.querySelector('[data-talk="team"]');
         elements.prive = document.querySelector('[data-talk="private"]');
         elements.user = document.querySelector('#topbar>select');
+        elements.today = document.querySelector('#topbar>span');
         elements.editIp = document.querySelector('[data-type="edit"]');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
@@ -407,6 +410,9 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
             });
     };
 
+    updateCampaign = function () {
+    };
+
     processChanges = function (changed) {
         if (Array.isArray(changed.docs)) {
             changed.docs.forEach(function (doc) {
@@ -424,6 +430,9 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                 }
             });
         }
+    };
+
+    campaignChanged = function (change) {
     };
 
     startReplicator = function () {
@@ -444,6 +453,24 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
             })
             .on('change', function (changed) {
                 processChanges(changed);
+            });
+        remote.replicate.to(db, {
+            live: true,
+            doc_ids: ['campaign'],
+            retry: true,
+            include_docs: true
+        })
+            .on('error', function (err) {
+                console.error('Error replicatingn campaign from zone', err);
+            })
+            .on('paused', function (err) {
+                if (err) {
+                    console.error('Error replicating campaing from zone (paused)', err);
+                }
+                updateCampaign();
+            })
+            .on('change', function (changed) {
+                campaignChanged(changed);
             });
         db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
             .on('error', function (err) {
