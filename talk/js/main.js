@@ -127,7 +127,8 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
     // Save text when enter has been pressed
     addOnEnter = function (ev) {
         var doc,
-            msg;
+            msg,
+            ocTime;
         if ((ev.key && ev.key === 'Enter') ||
                 (ev.keyIndentifier && ev.keyIdentifier === 'Enter') ||
                 (ev.keyCode && ev.keyCode === 13)
@@ -140,8 +141,13 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                 doc = talks.team.doc;
                 break;
             }
+            ocTime = new Date();
+            gameTime.setHours(ocTime.getHours());
+            gameTime.setMinutes(ocTime.getMinutes());
+            gameTime.setSeconds(ocTime.getSeconds());
+            gameTime.setMilliseconds(ocTime.getMilliseconds());
             msg = {
-                timestamp: new Date().toISOString(),
+                timestamp: gameTime.toISOString(),
                 text: ev.target.value,
                 author: talks.user.id
             };
