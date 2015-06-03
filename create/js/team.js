@@ -37,7 +37,6 @@ define([], function () {
             queue.push(msg);
             return;
         }
-        console.log('saving', doc);
         doc.talk.push(msg);
         localDb.put(doc)
             .catch(function (err) {

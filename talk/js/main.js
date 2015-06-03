@@ -18,7 +18,7 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         gear = Object.create(Gear),
         weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
         months = ['Jan', 'Feb', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Aug', 'Sept', 'Nov', 'Dec'],
-        gameTime,
+        gameTime = new Date(),
         // Interface elements
         setElements,
         // Helper functions

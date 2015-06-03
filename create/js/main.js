@@ -7,6 +7,7 @@ requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
         remote = new Pouchdb('https://zone.mekton.nl/db/zone'),
         team = new Team(talk, remote),
         npcMode = false,
+        gameTime = new Date(),
         replicator,
         localCharacter = {},
         elements = {},
@@ -603,8 +604,13 @@ requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
 
     // Share a name with the team talk
     elements.share.addEventListener('click', function (ev) {
+        var ocTime = new Date();
         ev.preventDefault();
-        team.save('gm', 'npc: ' + elements.name.value);
+        gameTime.setHours(ocTime.getHours());
+        gameTime.setMinutes(ocTime.getMinutes());
+        gameTime.setSeconds(ocTime.getSeconds());
+        gameTime.setMilliseconds(ocTime.getMilliseconds());
+        team.save('gm', 'npc: ' + elements.name.value, gameTime.toISOString());
     });
 
     // **************************************************************************************************
@@ -740,6 +746,36 @@ requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
             })
             .on('complete', function () { // will also be called on a replicator.cancel()
                 updateSelection();
+            });
+        remote.replicate.to(db, {
+            live: true,
+            doc_ids: ['campaign'],
+            retry: true,
+            include_docs: true
+        })
+            .on('error', function (err) {
+                console.error('Error replicatingn campaign from zone', err);
+            })
+            .on('paused', function (err) {
+                if (err) {
+                    console.error('Error replicating campaing from zone (paused)', err);
+                }
+                db.get('campaign')
+                    .then(function (doc) {
+                        gameTime = new Date(doc.today);
+                    })
+                    .catch(function (err) {
+                        console.error('Error getting local campaign doc', err);
+                    });
+            })
+            .on('change', function (changed) {
+                if (Array.isArray(changed.docs)) {
+                    changed.docs.forEach(function (doc) {
+                        if (doc._id === 'campaign') {
+                            gameTime = new Date(doc.today);
+                        }
+                    });
+                }
             });
         db.replicate.to(remote, {live: true})
             .on('error', function (err) {
