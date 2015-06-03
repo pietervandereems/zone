@@ -17,6 +17,7 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         skills = Object.create(Skills),
         gear = Object.create(Gear),
         weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
+        months = ['Jan', 'Feb', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Aug', 'Sept', 'Nov', 'Dec'],
         gameTime,
         // Interface elements
         setElements,
@@ -414,7 +415,7 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
     };
 
     updateToday = function () {
-        elements.today.innerHTML = weekday[gameTime.getDay()] + ' ' + gameTime.getDate() + '-' + (gameTime.getMonth() + 1) + '-' + gameTime.getFullYear();
+        elements.today.innerHTML = weekday[gameTime.getDay()] + ' ' + gameTime.getDate() + '-' + months[gameTime.getMonth()] + '-' + gameTime.getFullYear();
     };
 
     updateCampaign = function () {
