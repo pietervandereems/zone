@@ -16,6 +16,8 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         },
         skills = Object.create(Skills),
         gear = Object.create(Gear),
+        weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
+        gameTime,
         // Interface elements
         setElements,
         // Helper functions
@@ -32,6 +34,7 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         saveIps,
         tryAgain,
         tryAgainTalk,
+        updateToday,
         updateCampaign,
         campaignChanged,
         // Main functions
@@ -244,7 +247,7 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
             .then(function (nwDoc) {
                 doc._rev = nwDoc._rev;
                 db.put(doc)
-                    .then(function () {}, function (err) {
+                    .catch(function (err) {
                         console.error('Error in try again, in put after get', {db: db, doc: doc, error: err});
                     });
             }, function (err) {
@@ -258,7 +261,7 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                 nwDoc.talk.push(msg);
                 doc = nwDoc;
                 db.put(doc)
-                    .then(function () {}, function (err) {
+                    .catch(function (err) {
                         console.error('Error in try again Talk, in put after get', {db: db, doc: doc, error: err});
                     });
             }, function (err) {
@@ -410,7 +413,19 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
             });
     };
 
+    updateToday = function () {
+        elements.today.innerHTML = weekday[gameTime.getDay()] + ' ' + gameTime.getDate() + '-' + (gameTime.getMonth() + 1) + '-' + gameTime.getFullYear();
+    };
+
     updateCampaign = function () {
+        db.get('campaign')
+            .then(function (doc) {
+                gameTime = new Date(doc.today);
+                updateToday();
+            })
+            .catch(function (err) {
+                console.error('Error getting campaign doc', err);
+            });
     };
 
     processChanges = function (changed) {
@@ -432,7 +447,15 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         }
     };
 
-    campaignChanged = function (change) {
+    campaignChanged = function (changed) {
+        if (Array.isArray(changed.docs)) {
+            changed.docs.forEach(function (doc) {
+                if (doc._id === 'campaign') {
+                    gameTime = new Date(doc.today);
+                    updateToday();
+                }
+            });
+        }
     };
 
     startReplicator = function () {
