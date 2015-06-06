@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Talk, Skills, Gear) {
+requirejs(['pouchdb-3.5.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Talk, Skills, Gear) {
     'use strict';
     var // Internal variables
         db = new Pouchdb('zone'),
@@ -319,6 +319,7 @@ requirejs(['pouchdb-3.4.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                         nwLevel += 1;
                     }
                 }
+                skills.doc.skills[stat] = skills.doc.skills[stat] || [];
                 skills.doc.skills[stat].push({
                     name: nwSkillName,
                     level: nwLevel,
