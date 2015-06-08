@@ -27,9 +27,9 @@ requirejs(['pouchdb-3.6.0.min'], function (Pouchdb) {
     // **************************************************************************************************
     // Shortcuts to interface elements
     // **************************************************************************************************
-    elements.today = document.getDocumentById('today');
-    elements.prevDay = document.getDocumentById('prev');
-    elements.nextDay = document.getDocumentById('next');
+    elements.today = document.getElementById('today');
+    elements.prevDay = document.getElementById('prev');
+    elements.nextDay = document.getElementById('next');
 
     // **************************************************************************************************
     // Extend
