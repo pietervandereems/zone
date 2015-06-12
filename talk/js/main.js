@@ -425,6 +425,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
     updateToday = function () {
         elements.today.innerHTML = weekday[gameTime.getDay()] + ' ' + gameTime.getDate() + '-' + months[gameTime.getMonth()] + '-' + gameTime.getFullYear();
         elements.calendar.chosen = gameTime;
+        elements.calendar.view = gameTime;
     };
 
     updateCampaign = function () {
