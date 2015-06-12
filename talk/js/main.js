@@ -56,6 +56,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         elements.user = document.querySelector('#topbar>select');
         elements.today = document.querySelector('#topbar>span');
         elements.editIp = document.querySelector('[data-type="edit"]');
+        elements.calendar = document.querySelector('brick-calendar');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
@@ -423,6 +424,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
 
     updateToday = function () {
         elements.today.innerHTML = weekday[gameTime.getDay()] + ' ' + gameTime.getDate() + '-' + months[gameTime.getMonth()] + '-' + gameTime.getFullYear();
+        elements.calendar.chosen = gameTime;
     };
 
     updateCampaign = function () {
