@@ -9,6 +9,7 @@ requirejs(['pouchdb-3.6.0.min'], function (Pouchdb) {
         weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
         months = ['Jan', 'Feb', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Aug', 'Sept', 'Nov', 'Dec'],
         gameTime = new Date(),
+        campaignDoc,
         // Interface elements
         // Helper functions
         // Event functions
@@ -47,8 +48,16 @@ requirejs(['pouchdb-3.6.0.min'], function (Pouchdb) {
     // **************************************************************************************************
     changeDate = function (amount) {
         return function () {
-            gameTime.setTime(gameTime.getTime() - (86400000 * amount)); // 86400000 = 1000 * 60 * 60 * 24 = miliseconds in a day
+            gameTime.setTime(gameTime.getTime() + (86400000 * amount)); // 86400000 = 1000 * 60 * 60 * 24 = miliseconds in a day
             showGameTime();
+            campaignDoc.today = gameTime.toISOString();
+            db.put(campaignDoc)
+                .then(function (result) {
+                    console.log('saved', result);
+                })
+                .catch(function (err) {
+                    console.error('Error saving campaignDoc locally', err);
+                });
         };
     };
 
@@ -72,6 +81,7 @@ requirejs(['pouchdb-3.6.0.min'], function (Pouchdb) {
     updateCampaign = function () {
         db.get('campaign')
             .then(function (doc) {
+                campaignDoc = doc;
                 gameTime = new Date(doc.today);
                 showGameTime();
             })
@@ -84,6 +94,7 @@ requirejs(['pouchdb-3.6.0.min'], function (Pouchdb) {
         if (Array.isArray(changed.docs)) {
             changed.docs.forEach(function (doc) {
                 if (doc._id === 'campaign') {
+                    campaignDoc = doc;
                     gameTime = new Date(doc.today);
                     showGameTime();
                 }
@@ -110,12 +121,12 @@ requirejs(['pouchdb-3.6.0.min'], function (Pouchdb) {
             .on('change', function (changed) {
                 campaignChanged(changed);
             });
-        db.replicate.to('https://zone.mekton.nl/db/zone', {live: true})
+        db.replicate.to(remote, {live: true})
+            .on('denied', function (reason) {
+                console.log('denied', reason);
+            })
             .on('error', function (err) {
                 console.error('Error replicating to zone', err);
-            })
-            .on('change', function (changed) {
-                campaignChanged(changed);
             });
     };
 
