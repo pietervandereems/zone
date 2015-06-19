@@ -375,7 +375,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                     }
                 }
                 if (type === 'team') {
-                    showDate = '2015-08-05';
+                    showDate = elements.calendar.chosen;
                 }
                 if (doc._rev !== preRev[type]) {
                     talks[type].show(showDate);
@@ -459,7 +459,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                 }
                 if (doc._id === 'team') {
                     talks.team.doc = doc;
-                    talks.team.show('2015-08-05');
+                    talks.team.show(elements.calendar.chosen);
                 }
             });
         }
