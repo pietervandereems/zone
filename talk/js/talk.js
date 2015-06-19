@@ -5,7 +5,8 @@ define([], function () {
     var toBeDisplayed,
         showTalk,
         display,
-        weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'];
+        weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
+        padToTwo;
 
     // **************************************************************************************************
     // Internal
@@ -23,6 +24,16 @@ define([], function () {
         }
     };
 
+    // pad the day/month to two characters
+    padToTwo = function (num) {
+        var str = num.toString(),
+            i;
+        for (i = str.length; i < 2; i += 1) {
+            str = '0' + str;
+        }
+        return str;
+    };
+
     // **************************************************************************************************
     // External
     // **************************************************************************************************
@@ -36,7 +47,7 @@ define([], function () {
 
         if (showDate) {
             sDate = new Date(showDate);
-            showDayStart = new Date(sDate.getFullYear() + '-' + sDate.getMonth() + '-' + sDate.getDate());
+            showDayStart = new Date(sDate.getFullYear() + '-' + padToTwo(sDate.getMonth() + 1) + '-' + padToTwo(sDate.getDate()));
         }
         talk.sort(function (a, b) {
             var dateA = new Date(a.timestamp),
@@ -50,8 +61,8 @@ define([], function () {
                 dates = {
                     original: new Date(item.timestamp)
                 };
-            dates.startDay = new Date(dates.original.getFullYear() + '-' + dates.original.getMonth() + '-' + dates.original.getDate());
-            if (!showDate || dates.startDay === showDayStart) {
+            dates.startDay = new Date(dates.original.getFullYear() + '-' + padToTwo(dates.original.getMonth() + 1) + '-' + padToTwo(dates.original.getDate()));
+            if (!showDate || dates.startDay.getTime() === showDayStart.getTime()) {
                 li.setAttribute('data-time', item.timestamp);
                 li.setAttribute('data-text', item.text);
                 if (item.author) { // every author in a different color
