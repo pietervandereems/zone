@@ -246,6 +246,9 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         });
     });
 
+    elements.calendar.addEventListener('datetoggleon', function (ev) {
+        talks.team.show(ev.detail.iso);
+    });
     // **************************************************************************************************
     // Database
     // **************************************************************************************************
