@@ -27,11 +27,17 @@ define([], function () {
     // External
     // **************************************************************************************************
     // Show/update the talk inside the set element.
-    showTalk = function () {
+    showTalk = function (showDate) {
         var ul = document.createElement('ul'),
             doc = this.doc,
-            talk = doc.talk;
+            talk = doc.talk,
+            sDate,
+            showDayStart;
 
+        if (showDate) {
+            sDate = new Date(showDate);
+            showDayStart = new Date(sDate.getFullYear() + '-' + sDate.getMonth() + '-' + sDate.getDate());
+        }
         talk.sort(function (a, b) {
             var dateA = new Date(a.timestamp),
                 dateB = new Date(b.timestamp);
@@ -41,25 +47,29 @@ define([], function () {
             var li = document.createElement('li'),
                 color,
                 button = '',
-                date;
-            li.setAttribute('data-time', item.timestamp);
-            li.setAttribute('data-text', item.text);
-            if (item.author) { // every author in a different color
-                li.setAttribute('data-author', item.author);
-                color = (Math.floor(parseInt(item.author.substr(-6).split('').reverse().join(''), 16) * 0.71)).toString(16); // this calc gives me a nice spread of colors
-                if (color !== 'NaN') {
-                    while (color.length < 6) {
-                        color += '0';
+                dates = {
+                    original: new Date(item.timestamp)
+                };
+            dates.startDay = new Date(dates.original.getFullYear() + '-' + dates.original.getMonth() + '-' + dates.original.getDate());
+            if (!showDate || dates.startDay === showDayStart) {
+                li.setAttribute('data-time', item.timestamp);
+                li.setAttribute('data-text', item.text);
+                if (item.author) { // every author in a different color
+                    li.setAttribute('data-author', item.author);
+                    color = (Math.floor(parseInt(item.author.substr(-6).split('').reverse().join(''), 16) * 0.71)).toString(16); // this calc gives me a nice spread of colors
+                    if (color !== 'NaN') {
+                        while (color.length < 6) {
+                            color += '0';
+                        }
+                        li.style.color = '#' + color;
                     }
-                    li.style.color = '#' + color;
                 }
+                if (doc._id !== 'team') {
+                    button = '<button type="button">d</button>';
+                }
+                li.innerHTML = button + '<span>(' + weekday[dates.original.getDay()] + ' ' + dates.original.getDate() + '-' + (dates.original.getMonth() + 1) + '-' + dates.original.getFullYear() + ')</span> ' + item.text;
+                ul.appendChild(li);
             }
-            if (doc._id !== 'team') {
-                button = '<button type="button">d</button>';
-            }
-            date = new Date(item.timestamp);
-            li.innerHTML = button + '<span>(' + weekday[date.getDay()] + ' ' + date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + ')</span> ' + item.text;
-            ul.appendChild(li);
         });
         display.call(this, ul);
     };
