@@ -361,6 +361,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         }
         update = function (type) {
             return function (doc) {
+                var showDate;
                 talks[type].doc = doc;
                 if (type !== 'team') {
                     if (doc._rev !== preRev[type]) {
@@ -370,8 +371,11 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                         gear.show();
                     }
                 }
+                if (type === 'team') {
+                    showDate = '2015-08-05';
+                }
                 if (doc._rev !== preRev[type]) {
-                    talks[type].show();
+                    talks[type].show(showDate);
                 }
             };
         };
@@ -452,7 +456,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                 }
                 if (doc._id === 'team') {
                     talks.team.doc = doc;
-                    talks.team.show();
+                    talks.team.show('2015-08-05');
                 }
             });
         }
