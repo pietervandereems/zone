@@ -132,6 +132,8 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
     // show/update thumb;
     showThumb = function (doc) {
         if (!doc._attachments || !doc._attachments['thumb.jpg'] || doc._attachments['thumb.jpg'].digest === thumbHash) {
+            elements.thumb.src = '';
+            thumbHash = '';
             return;
         }
         db.getAttachment(doc._id, 'thumb.jpg')
