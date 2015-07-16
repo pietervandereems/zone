@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Talk, Skills, Gear) {
+requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], function (Pouchdb, Talk, Skills, Gear, blobUtil) {
     'use strict';
     var // Internal variables
         db = new Pouchdb('zone'),
@@ -19,8 +19,11 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
         months = ['Jan', 'Feb', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Aug', 'Sept', 'Nov', 'Dec'],
         gameTime = new Date(),
+        thumbHash = '',
         // Interface elements
         setElements,
+        // Interface updates
+        showThumb,
         // Helper functions
         setMsg,
         findSkill,
@@ -57,6 +60,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         elements.today = document.querySelector('#topbar>span');
         elements.editIp = document.querySelector('[data-type="edit"]');
         elements.calendar = document.querySelector('brick-calendar');
+        elements.thumb = document.getElementById('thumb');
         // Tell talk which element is it's home
         talks.user.element = elements.prive;
         talks.team.element = elements.team;
@@ -120,6 +124,24 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
         li.innerHTML = '<input type="text" name="name" placeholder="Ex: throwing"></input>';
         li.innerHTML += '<label style="visibility: visible;">ip: <input type="number" value=0 min=0 max=100 name="ip"></input></label>';
         elm.querySelector('ul').appendChild(li);
+    };
+
+    // **************************************************************************************************
+    // Interface Elements
+    // **************************************************************************************************
+    // show/update thumb;
+    showThumb = function (doc) {
+        if (!doc._attachments || !doc._attachments['thumb.jpg'] || doc._attachments['thumb.jpg'].digest === thumbHash) {
+            return;
+        }
+        db.getAttachment(doc._id, 'thumb.jpg')
+            .then(function (blob) {
+                elements.thumb.src = blobUtil.createObjectURL(blob);
+                thumbHash = doc._attachments['thumb.jpg'].digest;
+            })
+            .catch(function (err) {
+                console.error('Error getting attachment thumb.jpg', {doc: doc._id, err: err});
+            });
     };
 
     // **************************************************************************************************
@@ -372,6 +394,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                         gear.doc = doc;
                         skills.show();
                         gear.show();
+                        showThumb(doc);
                     }
                 }
                 if (type === 'team') {
@@ -456,6 +479,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear'], function (Pouchdb, Ta
                     talks.user.show();
                     skills.show();
                     gear.show();
+                    showThumb(doc);
                 }
                 if (doc._id === 'team') {
                     talks.team.doc = doc;
