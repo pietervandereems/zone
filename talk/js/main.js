@@ -131,10 +131,13 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
     // **************************************************************************************************
     // show/update thumb;
     showThumb = function (doc) {
-        if (!doc._attachments || !doc._attachments['thumb.jpg'] || doc._attachments['thumb.jpg'].digest === thumbHash) {
+        if (!doc._attachments || !doc._attachments['thumb.jpg']) { // no thumbnail, clear display
             elements.thumb.style.visibility = 'hidden';
             elements.thumb.src = '';
             thumbHash = '';
+            return;
+        }
+        if (doc._attachments['thumb.jpg'].digest === thumbHash) { // same thumbnail, no need to refresh
             return;
         }
         db.getAttachment(doc._id, 'thumb.jpg')
