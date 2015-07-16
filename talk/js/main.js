@@ -132,7 +132,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
     // show/update thumb;
     showThumb = function (doc) {
         if (!doc._attachments || !doc._attachments['thumb.jpg'] || doc._attachments['thumb.jpg'].digest === thumbHash) {
-            elements.thumb.style.display = 'none';
+            elements.thumb.style.visibility = 'hidden';
             elements.thumb.src = '';
             thumbHash = '';
             return;
@@ -140,11 +140,11 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
         db.getAttachment(doc._id, 'thumb.jpg')
             .then(function (blob) {
                 elements.thumb.src = blobUtil.createObjectURL(blob);
-                elements.thumb.style.display = 'block';
+                elements.thumb.style.visibility = 'visible';
                 thumbHash = doc._attachments['thumb.jpg'].digest;
             })
             .catch(function (err) {
-                elements.thumb.style.display = 'none';
+                elements.thumb.style.visibility = 'hidden';
                 elements.thumb.src = '';
                 thumbHash = '';
                 console.error('Error getting attachment thumb.jpg', {doc: doc._id, err: err});
