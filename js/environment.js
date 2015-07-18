@@ -1,6 +1,6 @@
 /*jslint browser:true*/
 /*global define:true*/
-define(['pouchdb-3.6.0.min', 'skills'], function (Pouchdb, Skills) {
+define(['pouchdb-3.6.0.min'], function (Pouchdb) {
     'use strict';
     var db = new Pouchdb('zone'),
         remote = new Pouchdb('https://zone.mekton.nl/db/zone'),
@@ -33,20 +33,15 @@ define(['pouchdb-3.6.0.min', 'skills'], function (Pouchdb, Skills) {
 
         addEnv = function (docs) {
             docs.rows.sort(orderEnv).forEach(function (item) {
-                var skills,
-                    li,
+                var li,
                     div,
                     info = '';
                 if (item.doc.type !== 'environment') {
                     return;
                 }
-                skills = Object.create(Skills);
                 li = document.createElement('li');
                 div = document.createElement('div');
                 div.classList.add('off');
-                skills.element = div;
-                skills.doc = item.doc;
-                skills.show();
 
                 if (item.doc.info) {
                     info = item.doc.info.gm || '';
