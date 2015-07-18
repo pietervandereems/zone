@@ -508,9 +508,9 @@ requirejs(['pouchdb-3.6.0.min', 'team'], function (Pouchdb, Team) {
         if (localCharacter.name && localCharacter.id && localCharacter.name === elements.name.value) {
             if (window.confirm('Overwrite existing character? (name is the same)')) {
                 character.archetype = elements.charType.value;
-                if (elements.input.value) {
+                if (elements.info.value) {
                     character.gm = {
-                        info: elements.input.value
+                        info: elements.info.value
                     };
                 }
                 db.put(character, character._id, character._rev, function (err) {
@@ -526,9 +526,9 @@ requirejs(['pouchdb-3.6.0.min', 'team'], function (Pouchdb, Team) {
             character.name = elements.name.value;
             character.archetype = elements.charType.value;
             character.type = npcMode ? 'npc' : 'pc';
-            if (elements.input.value) {
+            if (elements.info.value) {
                 character.gm = {
-                    info: elements.input.value
+                    info: elements.info.value
                 };
             }
             db.post(character, function (err, result) {
