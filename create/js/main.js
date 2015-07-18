@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-3.4.0.min', 'team'], function (Pouchdb, Team) {
+requirejs(['pouchdb-3.6.0.min', 'team'], function (Pouchdb, Team) {
     'use strict';
     var db = new Pouchdb('mekton'),
         talk = new Pouchdb('zone'),
