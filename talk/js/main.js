@@ -402,7 +402,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
                     if (doc._rev !== preRev[type]) {
                         skills.doc = doc;
                         gear.doc = doc;
-                        skills.show(elements.editIp.innerHTML !== 's');
+                        skills.showBySkill(elements.editIp.innerHTML !== 's');
                         gear.show();
                         showThumb(doc);
                     }
@@ -487,7 +487,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
                     skills.doc = doc;
                     gear.doc = doc;
                     talks.user.show();
-                    skills.show(elements.editIp.innerHTML !== 's');
+                    skills.showBySkill(elements.editIp.innerHTML !== 's');
                     gear.show();
                     showThumb(doc);
                 }

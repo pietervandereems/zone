@@ -4,6 +4,7 @@ define([], function () {
     'use strict';
     var toBeDisplayed,
         showSkills,
+        showBySkill,
         display;
 
     // **************************************************************************************************
@@ -73,8 +74,63 @@ define([], function () {
         display.call(this, elements);
     };
 
+    showBySkill = function (really) {
+        var skills = this.doc.skills,
+            stats = this.doc.stats,
+            skilllist = [],
+            order,
+            ul,
+            elements = [],
+            divider,
+            count = 0;
+
+        if (!really) {
+            return;
+        }
+
+        order = function (a, b) {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
+        };
+
+        Object.keys(skills).forEach(function (stat) {
+            skills[stat].forEach(function (skill) {
+                skilllist.push({
+                    name: skill.name,
+                    level: skill.level,
+                    ip: skill.ip,
+                    base: stats[stat] + skill.level
+                });
+            });
+        });
+
+        divider = Math.ceil(skilllist.length / 4);
+        skilllist.sort(order).forEach(function (skill) {
+            var li;
+            if ((count % divider) === 0) {
+                if (count > 0) {
+                    elements.push(ul);
+                }
+                ul = document.createElement('ul');
+            }
+            li = document.createElement('li');
+            li.setAttribute('data-skill', skill.name);
+            li.innerHTML = skill.name + ': ' + skill.level + ' <span>(' + skill.base  + ')</span>';
+            li.innerHTML += ' <label>ip: <input type="number" value=' + skill.ip  + ' min=0 max=100></input></label>';
+            count += 1;
+            ul.appendChild(li);
+        });
+        display.call(this, elements);
+    };
+
     return {
         show: showSkills,
+        showBySkill: showBySkill,
         set element (e) {
             this.elm = e;
             display(toBeDisplayed);
