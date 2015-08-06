@@ -15,6 +15,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
             team: Object.create(Talk)
         },
         skills = Object.create(Skills),
+        showSkills = 'stat',
         gear = Object.create(Gear),
         weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
         months = ['Jan', 'Feb', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Aug', 'Sept', 'Nov', 'Dec'],
@@ -244,7 +245,21 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
         case 'addSkill':
             addSkill(ev.target.parentElement);
             break;
+        case 'switch':
+            if (ev.target.dataset.section && ev.target.dataset.section === 'skill') {
+                if (showSkills === 'stats') {
+                    showSkills = 'list';
+                    skills.showSkills(elements.editIp.innerHTML !== 's');
+
+                } else {
+                    showSkills = 'stats';
+                    skills.show(elements.editIp.innerHTML !== 's');
+                }
+
+            }
+            break;
         }
+
     });
 
     // Show/hide+save the IP inputs and add skill butons
@@ -402,7 +417,11 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
                     if (doc._rev !== preRev[type]) {
                         skills.doc = doc;
                         gear.doc = doc;
-                        skills.showBySkill(elements.editIp.innerHTML !== 's');
+                        if (showSkills === 'stat') {
+                            skills.show(elements.editIp.innerHTML !== 's');
+                        } else {
+                            skills.showBySkill(elements.editIp.innerHTML !== 's');
+                        }
                         gear.show();
                         showThumb(doc);
                     }
@@ -487,7 +506,11 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
                     skills.doc = doc;
                     gear.doc = doc;
                     talks.user.show();
-                    skills.showBySkill(elements.editIp.innerHTML !== 's');
+                    if (showSkills === 'stat') {
+                        skills.show(elements.editIp.innerHTML !== 's');
+                    } else {
+                        skills.showBySkill(elements.editIp.innerHTML !== 's');
+                    }
                     gear.show();
                     showThumb(doc);
                 }
