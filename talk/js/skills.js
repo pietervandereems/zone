@@ -109,7 +109,7 @@ define([], function () {
             });
         });
 
-        divider = Math.ceil(skilllist.length / 4);
+        divider = Math.ceil(skilllist.length / 5);
         skilllist.sort(order).forEach(function (skill) {
             var li;
             if ((count % divider) === 0) {
@@ -125,6 +125,7 @@ define([], function () {
             count += 1;
             ul.appendChild(li);
         });
+        elements.push(ul);
         display.call(this, elements);
     };
 
