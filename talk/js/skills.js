@@ -29,12 +29,15 @@ define([], function () {
     // External
     // **************************************************************************************************
     // Show/update the talk inside the set element.
-    showSkills = function () {
+    showSkills = function (really) {
         var elements = [],
             skills = this.doc.skills,
             stats = this.doc.stats,
             doc = this.doc,
             order;
+        if (!really) {
+            return;
+        }
 
         order = function (a, b) {
             if (a.name < b.name) {
