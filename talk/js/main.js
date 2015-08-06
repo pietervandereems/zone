@@ -15,7 +15,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
             team: Object.create(Talk)
         },
         skills = Object.create(Skills),
-        showSkills = 'stats',
+        showSkills = 'skills',
         gear = Object.create(Gear),
         weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
         months = ['Jan', 'Feb', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Aug', 'Sept', 'Nov', 'Dec'],
