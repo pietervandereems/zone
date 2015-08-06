@@ -15,7 +15,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
             team: Object.create(Talk)
         },
         skills = Object.create(Skills),
-        showSkills = 'stat',
+        showSkills = 'stats',
         gear = Object.create(Gear),
         weekday = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
         months = ['Jan', 'Feb', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Aug', 'Sept', 'Nov', 'Dec'],
@@ -246,10 +246,10 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
             addSkill(ev.target.parentElement);
             break;
         case 'switch':
-            if (ev.target.dataset.section && ev.target.dataset.section === 'skill') {
+            if (ev.target.dataset.section && ev.target.dataset.section === 'skills') {
                 if (showSkills === 'stats') {
                     showSkills = 'list';
-                    skills.showSkills(elements.editIp.innerHTML !== 's');
+                    skills.showBySkill(elements.editIp.innerHTML !== 's');
 
                 } else {
                     showSkills = 'stats';
@@ -417,7 +417,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
                     if (doc._rev !== preRev[type]) {
                         skills.doc = doc;
                         gear.doc = doc;
-                        if (showSkills === 'stat') {
+                        if (showSkills === 'stats') {
                             skills.show(elements.editIp.innerHTML !== 's');
                         } else {
                             skills.showBySkill(elements.editIp.innerHTML !== 's');
@@ -506,7 +506,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
                     skills.doc = doc;
                     gear.doc = doc;
                     talks.user.show();
-                    if (showSkills === 'stat') {
+                    if (showSkills === 'stats') {
                         skills.show(elements.editIp.innerHTML !== 's');
                     } else {
                         skills.showBySkill(elements.editIp.innerHTML !== 's');
