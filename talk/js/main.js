@@ -485,6 +485,7 @@ requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], func
         elements.today.innerHTML = weekday[gameTime.getDay()] + ' ' + gameTime.getDate() + '-' + months[gameTime.getMonth()] + '-' + gameTime.getFullYear();
         elements.calendar.chosen = gameTime;
         elements.calendar.view = gameTime;
+        talks.team.show(gameTime);
     };
 
     updateCampaign = function () {

@@ -17,6 +17,10 @@ body {
     font-family: "sans-serif";
 }
 
+input {
+    width: 80%;
+}
+
 input[type=number] {
     width: 3em;
 }
