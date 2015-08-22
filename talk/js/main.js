@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-3.6.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], function (Pouchdb, Talk, Skills, Gear, blobUtil) {
+requirejs(['pouchdb-4.0.0.min', 'talk', 'skills', 'gear', 'blob-util.min'], function (Pouchdb, Talk, Skills, Gear, blobUtil) {
     'use strict';
     var // Internal variables
         db = new Pouchdb('zone'),
