@@ -1,0 +1,191 @@
+@charset "utf-8";
+/* Some default settings */
+* + * {
+    margin-top: 0.5em;
+}
+
+li {
+    margin: 0;
+}
+
+body {
+    background-image: url("../img/bg20.gif");
+    background-color: black;
+    color: silver;
+    margin: 0.5em;
+    margin-top: 0;
+    font-family: "sans-serif";
+}
+
+input[type=number] {
+    width: 3em;
+}
+
+#topbar {
+    display             : flex;
+    flex-direction      : row;
+    flex-wrap           : nowrap;
+    justify-content     : space-around;
+    background-color: black;
+    padding: 0.5em;
+    margin-left: -0.5em;
+    margin-right: -0.5em;
+    transition: all 0.5s ease;
+
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -webkit-transition: all 0.5s ease;
+
+    /* old browser support */
+    display                 : -webkit-flex;
+    -webkit-flex-direction  : row;
+    -webkit-flex-wrap       : nowrap;
+    -webkit-justify-content : space-around;
+
+    display                 : -ms-flexbox;
+    -ms-flex-direction      : row;
+    -ms-flex-wrap           : nowrap;
+    -ms-justify-content     : space-around;
+
+}
+
+/* all sections use flexbox */
+section {
+    display             : flex;
+    flex-direction      : row;
+    flex-wrap           : wrap;
+    justify-content     : space-between;
+    align-items         : flex-start;
+
+    /* old browser support */
+    display                 : -webkit-flex;
+    -webkit-flex-direction  : row;
+    -webkit-flex-wrap       : wrap;
+    -webkit-justify-content : space-between;
+    -webkit-align-items     : flex-start;
+
+    display                 : -ms-flexbox;
+    -ms-flex-direction      : row;
+    -ms-flex-wrap           : wrap;
+    -ms-justify-content     : space-between;
+    -ms-flex-align          : start;
+}
+
+/* talks have a different flex layout */
+section[data-talk] {
+    flex-direction      : column;
+    flex-wrap           : nowrap;
+    justify-content     : space-around;
+
+    /* old browser support */
+    -webkit-flex-direction  : column;
+    -webkit-flex-wrap       : nowrap;
+    -webkit-justify-content : space-around;
+
+    -ms-flex-direction      : column;
+    -ms-flex-wrap           : nowrap;
+    -ms-justify-content     : space-around;
+}
+
+/* put the talk input at the end */
+section[data-talk] ul {
+    order: 0;
+    /* old browser support */
+    -ms-flex-order: 0;
+    -webkit-order: 0;
+}
+section[data-talk] input {
+    order: 1;
+    /* old browser support */
+    -ms-flex-order: 1;
+    -webkit-order: 1;
+}
+
+/* Style the share button */
+section[data-talk] li button {
+    font-family: 'icomoon';
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    border: none;
+    background: none;
+    color: inherit;
+}
+
+/* use icomoon font for icons*/
+.icon {
+    font-family: 'icomoon';
+}
+
+/* hide the contents */
+.off {
+    height: 0;
+    overflow: hidden;
+}
+
+/*** Skill/gear styling ***/
+/* For skills/stats/gear */
+.blocked>ul>li {
+    text-transform: capitalize;
+    color: burlywood;
+}
+
+.blocked li {
+    color: silver;
+}
+
+[data-stat] span {
+    font-size: smaller;
+}
+
+
+.blocked ul {
+    margin-top: 0.5em;
+    background-color: #161616;
+    list-style: outside none none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    border-color: #565656;
+    padding: 5px;
+    margin-right: 5px;
+}
+
+.blocked ul ul {
+    list-style: outside none disc;
+    padding-left: 25px;
+    border-style: none;
+}
+
+/* start with ip input as hidden */
+#skills label {
+    visibility: hidden;
+}
+
+/* start with add skill button as hidden */
+#skills button[data-type="addSkill"] {
+    visibility: hidden;
+}
+
+/* show spans as small text*/
+span {
+    font-size: small;
+}
+
+/*
+Copyright 2014 Pieter van der Eems
+This file is part of CreateNPC
+CreateNPC is free software: you can redistribute it and/or modify
+it under the terms of the Affero GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+CreateNPC is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+Affero GNU General Public License for more details.
+You should have received a copy of the Affero GNU General Public License
+along with CreateNPC. If not, see <http://www.gnu.org/licenses/>.
+*/

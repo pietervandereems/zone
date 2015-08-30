@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script data-main="js/main.js" src="js/require.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/fonts.css" />
+    <link rel="stylesheet" type="text/css" href="css/page.css" />
+    <title>Zone</title>
+</head>
+<body>
+    <div id="topbar">Zone<select></select><span></span></div>
+    <div id="consol"></div>
+    <button data-type="shrink" data-section="skills">Skills</button><button data-type="edit" class="icon">e</button>
+    <section id="skills" class="blocked">
+    </section>
+    <button data-type="shrink" data-section="gear">Gear</button><button data-type="edit" class="icon">e</button>
+    <section id="gear" class="blocked off">
+    </section>
+    <section data-talk="team">
+        <button data-type="shrink" >Team Notes</button>
+        <ul></ul>
+        <input type="text" autocomplete="on" placeholder="Bijv. Hoi">
+        <p>
+            <img id="thumb">
+	    </p>
+    </section>
+    <section data-talk="private">
+        <button data-type="shrink">Private Notes</button>
+        <ul></ul>
+        <input type="text" autocomplete="on" placeholder="Bijv. Hoi">
+    </section>
+</body>
+</html>
+<!-- Copyright 2015 Pieter van der Eems -->
+<!-- This file is part of Zone
+Zone is free software: you can redistribute it and/or modify
+it under the terms of the Affero GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+Zone is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+Affero GNU General Public License for more details.
+You should have received a copy of the Affero GNU General Public License
+along with Zone. If not, see <http://www.gnu.org/licenses/>.-->
