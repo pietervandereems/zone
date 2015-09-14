@@ -1,6 +1,6 @@
 /*jslint browser:true, nomen:true*/
 /*global requirejs*/
-requirejs(['pouchdb-4.0.0.min'], function (Pouchdb) {
+requirejs(['pouchdb-4.0.2.min'], function (Pouchdb) {
     'use strict';
     var db = new Pouchdb('zone_pcs'),
         remoteDb = new Pouchdb('https://zone.mekton.nl/p/zone_pcs'),
